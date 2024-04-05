@@ -17,6 +17,13 @@ urlpatterns = [
     path('cat_pes_add/', cat_pes_add, name='cat_pes_add'),
     path('cat_pes_edt/', cat_pes_edt, name='cat_pes_edt'),
     path('cat_pes_del/', cat_pes_del, name='cat_pes_del'),
+    
+    path('cat_sta_index', cat_sta_index, name='index'),
+    path('cat_sta_lista/', cat_sta_lista, name='cat_sta_lista'),
+    path('cat_sta_atb/', cat_sta_atb, name='cat_sta_atb'),
+    path('cat_sta_add/', cat_sta_add, name='cat_sta_add'),
+    path('cat_sta_edt/', cat_sta_edt, name='cat_sta_edt'),
+    path('cat_sta_del/', cat_sta_del, name='cat_sta_del'),
 
 
 

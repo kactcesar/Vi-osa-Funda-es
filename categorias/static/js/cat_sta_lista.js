@@ -22,10 +22,10 @@ function isValidColor(color) {
     return /^#[0-9A-F]{6}$/i.test(color); // Verifica se a cor está no formato "#RRGGBB"
 }
 
-var tab_pes = function() {
-    var kt_pes = function() {
+var tab_cat_sta = function() {
+    var kt_cat_sta = function() {
         
-        var table = $('#kt_pes');
+        var table = $('#kt_cat_sta');
         // begin first table
         table.on('processing.dt', function (e, settings, processing) {
             if (processing) {
@@ -43,7 +43,7 @@ var tab_pes = function() {
             paging: false,
             language: {
                 processing:     "Processamento em andamento...",
-                search:         "Pesquisar:",
+                search:         "cat_staquisar:",
                 lengthMenu:     "MENU registros por página",
                 info:           "Mostrando de START até END de TOTAL registros",
                 infoEmpty:      "Mostrando 0 até 0 de 0 registros",
@@ -64,7 +64,7 @@ var tab_pes = function() {
                 }
             },
             ajax: {
-                url: '/categorias/cat_pes_lista/',
+                url: '/categorias/cat_sta_lista/',
                 type: 'POST',
                 dataSrc: 'dados',
                 data: function(d) {
@@ -73,13 +73,24 @@ var tab_pes = function() {
             },
             order: [[ 0, 'asc' ]],
             columns: [
-                {data: 'pes_id'},
-                {data: 'pes_nome'},
-                {data: 'pes_email'},
-                {data: 'pes_ativo'},
+                {data: 'cat_sta_id'},
+                {data: 'cat_sta_nome'},
+                {data: 'cat_sta_cor'},
+                {data: 'cat_sta_ativo'},
                 {data: null, responsivePriority: -1},
             ],
             columnDefs: [
+                {
+                targets: [2],
+                type: "text",
+                render: function(data) {
+                    if (data.startsWith('#') && (data.length === 7 || data.length === 4)) {
+                        return '<div style="width: 30px; height: 30px; background-color: ' + data + ';"></div>';
+                    } else {
+                        return data;
+                    }
+                }
+                },  
                 {
                     targets: [3],
                     type: "text",
@@ -96,11 +107,11 @@ var tab_pes = function() {
                     orderable: false,
                     render: function(data, type, row) {
                         return '\
-                            <button type="button" onclick="pes_edt(' + row.pes_id + ')" class="btn btn-light-success btn-icon btn-circle"\
+                            <button type="button" onclick="cat_sta_edt(' + row.cat_sta_id + ')" class="btn btn-light-success btn-icon btn-circle"\
                                 data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
                                 <i class="flaticon-edit"></i>\
                             </button> \
-                            <button type="button" onclick="pes_del(' + row.pes_id + ')" class="btn btn-light-danger btn-icon btn-circle"\
+                            <button type="button" onclick="cat_sta_del(' + row.cat_sta_id + ')" class="btn btn-light-danger btn-icon btn-circle"\
                                 data-toggle="tooltip" data-placement="bottom" title="Remover">\
                                 <i class="flaticon-delete"></i>\
                             </button>\
@@ -114,7 +125,7 @@ var tab_pes = function() {
     return {
         //main function to initiate the module
         init: function() {
-            kt_pes();
+            kt_cat_sta();
         },
     };
 }();
@@ -122,32 +133,32 @@ var tab_pes = function() {
 
 
 jQuery(document).ready(function() {
-    tab_pes.init()
+    tab_cat_sta.init()
     
 });
 
-function abrir_modal_pes(){
-    $('#pes_btn_salvar').val('insert');
-    $('#pes_nome').val('');
-    $('#pes_email').val('');
-    $('#pes_ativo').prop('checked', false);
-    $('#frm_pes_modal').modal('show');
+function abrir_modal_cat_sta(){
+    $('#cat_sta_btn_salvar').val('insert');
+    $('#cat_sta_nome').val('');
+    $('#cat_sta_cor').val('');
+    $('#cat_sta_ativo').prop('checked', false);
+    $('#frm_cat_sta_modal').modal('show');
 }
 
-function pes_add(){
+function cat_sta_add(){
     var url
-    if($('#pes_btn_salvar').val() == 'update'){
-        url = '/categorias/cat_pes_edt/'
+    if($('#cat_sta_btn_salvar').val() == 'update'){
+        url = '/categorias/cat_sta_edt/'
     }else{
-        url = '/categorias/cat_pes_add/'
+        url = '/categorias/cat_sta_add/'
     }
 
-    var frm_pes = new FormData(document.getElementById('frm_pes'));
+    var frm_cat_sta = new FormData(document.getElementById('frm_cat_sta'));
 
     $.ajax({
         method: 'POST',
         url: url,
-        data: frm_pes,
+        data: frm_cat_sta,
         contentType: false,
         cache: false,
         processData: false,
@@ -166,8 +177,8 @@ function pes_add(){
     })
     .done(function(data,  textStatus, jqXHR){
         if (jqXHR.status === 200 && jqXHR.readyState === 4){
-            $('#kt_pes').DataTable().ajax.reload();
-            $('#frm_pes_modal').modal('hide');
+            $('#kt_cat_sta').DataTable().ajax.reload();
+            $('#frm_cat_sta_modal').modal('hide');
             Swal.close();
         }
     })
@@ -178,33 +189,33 @@ function pes_add(){
     });
 }
 
-function pes_edt(pes_id){
-    $.getJSON('/categorias/cat_pes_atb/',
+function cat_sta_edt(cat_sta_id){
+    $.getJSON('/categorias/cat_sta_atb/',
         {
-            id:pes_id
+            id:cat_sta_id
         }
     ).done(function (item) {
-        $('#pes_id').val(item.pes_id);
-        $('#pes_nome').val(item.pes_nome);
-        $('#pes_email').val(item.pes_email);
-        if (item.pes_ativo) {
-            $('#pes_ativo').prop('checked', true);
+        $('#cat_sta_id').val(item.cat_sta_id);
+        $('#cat_sta_nome').val(item.cat_sta_nome);
+        $('#cat_sta_cor').val(item.cat_sta_cor);
+        if (item.cat_sta_ativo) {
+            $('#cat_sta_ativo').prop('checked', true);
         } else {
-            $('#pes_ativo').prop('checked', false);
+            $('#cat_sta_ativo').prop('checked', false);
         }
-        $('#pes_btn_salvar').val('update');
+        $('#cat_sta_btn_salvar').val('update');
         $('[href="#kt_tab_pane_1"]').tab('show');
-        $('#frm_pes_modal').modal('show');
+        $('#frm_cat_sta_modal').modal('show');
     })
     .fail(function (jqxhr, settings, ex) {
         exibeDialogo(result.responseText, tipoAviso.ERRO);
     });
 }
 
-function pes_del(pes_id) {
+function cat_sta_del(cat_sta_id) {
     Swal.fire({
         title: "Deseja executar esta operação?",
-        text: "O registro " + pes_id + " será removido permanentemente.",
+        text: "O registro " + cat_sta_id + " será removido permanentemente.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Ok, desejo remover!",
@@ -214,10 +225,10 @@ function pes_del(pes_id) {
         if (result.value) {
             var dados = new FormData();
                 dados.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
-                dados.append("pes_id",pes_id);
+                dados.append("cat_sta_id",cat_sta_id);
             $.ajax({
                 method: 'POST',
-                url:'/categorias/cat_pes_del/',
+                url:'/categorias/cat_sta_del/',
                 data:  dados,
                 contentType: false,
                 cache: false,
@@ -238,8 +249,8 @@ function pes_del(pes_id) {
             .done(function(data,  textStatus, jqXHR){
                 console.log(jqXHR);
                 if (jqXHR.status === 200 && jqXHR.readyState === 4){
-                    $('#kt_pes').DataTable().ajax.reload();
-                    $('#frm_pes_modal').modal('hide');
+                    $('#kt_cat_sta').DataTable().ajax.reload();
+                    $('#frm_cat_sta_modal').modal('hide');
                     Swal.close();
                 }
             })

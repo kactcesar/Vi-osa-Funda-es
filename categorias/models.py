@@ -22,3 +22,20 @@ class CategoriaImpacto(models.Model):
     class Meta:
         managed = False
         db_table = 'categoriaimpacto'
+        
+        
+class CategoriaStatus(models.Model):
+    
+    cat_sta_id = models.BigAutoField(primary_key=True)
+    cat_sta_nome = models.CharField(max_length=255)
+    cat_sta_cor = models.CharField(max_length=255)
+    cat_sta_ativo = models.BooleanField(default=True)
+    usu_cad_dta = models.DateField(auto_now_add=True)
+    usu_alt_dta = models.DateField(auto_now=True)
+    usu_cad = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE, related_name='usuario_cadastro')
+    usu_alt= models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE, related_name='usuario_alteracao')
+
+    
+    class Meta:
+        managed = False
+        db_table = 'categoriastatus'

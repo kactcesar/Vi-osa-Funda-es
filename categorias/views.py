@@ -4,7 +4,7 @@ from .models import *
 from categorias.serializador import *
 from django.db import DatabaseError
 from django.shortcuts import render
-from .forms import CategoriaImpactoForm
+from .forms import *
 
 
 def cat_pes_index(request):
@@ -163,6 +163,95 @@ def cat_imp_del(request):
     try:
         if request.method == "POST":
             item = CategoriaImpacto.objects.get(pk=request.POST['cat_imp_id'])
+            item.delete()
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao deletar a Pessoa'
+        }, status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Excluido com sucesso!'
+        }, status=200)
+        
+        
+        
+################################################################## Categoria Status ################################################################################################
+
+def cat_sta_index(request):
+    return render(request, 'categoria status/cat_sta_index.html')
+
+def cat_sta_lista(request):
+    try:
+        dados = CategoriaStatusSerializer(CategoriaStatus.objects.all().order_by('cat_sta_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Problema ao consultar os dados'
+        }, status=500)
+    else:
+        return JsonResponse({'dados': dados.data})
+    
+    
+def cat_sta_atb(request):
+    try:
+        item = CategoriaStatusSerializer(CategoriaStatus.objects.get(pk=request.GET['id']))
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(item.data) 
+
+def cat_sta_add(request):
+    try:
+        item=CategoriaStatus()
+        item.cat_sta_nome=request.POST['cat_sta_nome']
+        item.cat_sta_cor=request.POST['cat_sta_cor']
+        item.cat_sta_ativo = request.POST.get('cat_sta_ativo') == 'on'
+        item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao adicionar a pessoa'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Adicionado com sucesso!'},
+            status=200)
+
+def cat_sta_edt(request):
+    try:
+        item = CategoriaStatus.objects.get(pk=request.POST['cat_sta_id'])
+        if request.method=="POST":
+            item.cat_sta_id=request.POST['cat_sta_id']
+            item.cat_sta_nome=request.POST['cat_sta_nome']
+            item.cat_sta_ativo = request.POST.get('cat_sta_ativo') == 'on'
+            item.cat_sta_cor=request.POST['cat_sta_cor']
+            item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao editar a pessoa'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Editado com sucesso!'},
+            status=200)
+    
+def cat_sta_del(request):
+    try:
+        if request.method == "POST":
+            item = CategoriaStatus.objects.get(pk=request.POST['cat_sta_id'])
             item.delete()
     except (Exception, DatabaseError) as error:
         print(error)
