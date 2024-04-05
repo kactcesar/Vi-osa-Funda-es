@@ -438,3 +438,10 @@ def cat_prod_del(request):
             'item': None,
             'aviso': 'Excluido com sucesso!'
         }, status=200)
+
+
+####################################################################### Menu Categoria #############################################################################
+
+
+def cat_menu_index(request):
+    return render(request, 'categoria menu/cat_menu_index.html')
