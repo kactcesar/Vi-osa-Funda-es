@@ -22,10 +22,10 @@ function isValidColor(color) {
     return /^#[0-9A-F]{6}$/i.test(color); // Verifica se a cor está no formato "#RRGGBB"
 }
 
-var tab_cat_imp = function() {
-    var kt_cat_imp = function() {
+var tab_pes = function() {
+    var kt_pes = function() {
         
-        var table = $('#kt_cat_imp');
+        var table = $('#kt_pes');
         // begin first table
         table.on('processing.dt', function (e, settings, processing) {
             if (processing) {
@@ -64,7 +64,7 @@ var tab_cat_imp = function() {
                 }
             },
             ajax: {
-                url: '/categorias/cat_imp_lista/',
+                url: '/categorias/cat_pes_lista/',
                 type: 'POST',
                 dataSrc: 'dados',
                 data: function(d) {
@@ -73,10 +73,10 @@ var tab_cat_imp = function() {
             },
             order: [[ 0, 'asc' ]],
             columns: [
-                {data: 'cat_imp_id'},
-                {data: 'cat_imp_nome'},
-                {data: 'cat_imp_cor'},
-                {data: 'cat_imp_ativo'},
+                {data: 'pes_id'},
+                {data: 'pes_nome'},
+                {data: 'pes_email'},
+                {data: 'pes_ativo'},
                 {data: null, responsivePriority: -1},
             ],
             columnDefs: [
@@ -107,11 +107,11 @@ var tab_cat_imp = function() {
                     orderable: false,
                     render: function(data, type, row) {
                         return '\
-                            <button type="button" onclick="cat_imp_edt(' + row.cat_imp_id + ')" class="btn btn-light-success btn-icon btn-circle"\
+                            <button type="button" onclick="pes_edt(' + row.pes_id + ')" class="btn btn-light-success btn-icon btn-circle"\
                                 data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
                                 <i class="flaticon-edit"></i>\
                             </button> \
-                            <button type="button" onclick="cat_imp_del(' + row.cat_imp_id + ')" class="btn btn-light-danger btn-icon btn-circle"\
+                            <button type="button" onclick="pes_del(' + row.pes_id + ')" class="btn btn-light-danger btn-icon btn-circle"\
                                 data-toggle="tooltip" data-placement="bottom" title="Remover">\
                                 <i class="flaticon-delete"></i>\
                             </button>\
@@ -125,7 +125,7 @@ var tab_cat_imp = function() {
     return {
         //main function to initiate the module
         init: function() {
-            kt_cat_imp();
+            kt_pes();
         },
     };
 }();
@@ -133,32 +133,32 @@ var tab_cat_imp = function() {
 
 
 jQuery(document).ready(function() {
-    tab_cat_imp.init()
+    tab_pes.init()
     
 });
 
-function abrir_modal_cat_imp(){
-    $('#cat_imp_btn_salvar').val('insert');
-    $('#cat_imp_nome').val('');
-    $('#cat_imp_cor').val('');
-    $('#cat_imp_ativo').prop('checked', false);
-    $('#frm_cat_imp_modal').modal('show');
+function abrir_modal_pes(){
+    $('#pes_btn_salvar').val('insert');
+    $('#pes_nome').val('');
+    $('#pes_email').val('');
+    $('#pes_ativo').prop('checked', false);
+    $('#frm_pes_modal').modal('show');
 }
 
-function cat_imp_add(){
+function pes_add(){
     var url
-    if($('#cat_imp_btn_salvar').val() == 'update'){
-        url = '/categorias/cat_imp_edt/'
+    if($('#pes_btn_salvar').val() == 'update'){
+        url = '/categorias/cat_pes_edt/'
     }else{
-        url = '/categorias/cat_imp_add/'
+        url = '/categorias/cat_pes_add/'
     }
 
-    var frm_cat_imp = new FormData(document.getElementById('frm_cat_imp'));
+    var frm_pes = new FormData(document.getElementById('frm_pes'));
 
     $.ajax({
         method: 'POST',
         url: url,
-        data: frm_cat_imp,
+        data: frm_pes,
         contentType: false,
         cache: false,
         processData: false,
@@ -177,8 +177,8 @@ function cat_imp_add(){
     })
     .done(function(data,  textStatus, jqXHR){
         if (jqXHR.status === 200 && jqXHR.readyState === 4){
-            $('#kt_cat_imp').DataTable().ajax.reload();
-            $('#frm_cat_imp_modal').modal('hide');
+            $('#kt_pes').DataTable().ajax.reload();
+            $('#frm_pes_modal').modal('hide');
             Swal.close();
         }
     })
@@ -189,33 +189,33 @@ function cat_imp_add(){
     });
 }
 
-function cat_imp_edt(cat_imp_id){
-    $.getJSON('/categorias/cat_imp_atb/',
+function pes_edt(pes_id){
+    $.getJSON('/categorias/cat_pes_atb/',
         {
-            id:cat_imp_id
+            id:pes_id
         }
     ).done(function (item) {
-        $('#cat_imp_id').val(item.cat_imp_id);
-        $('#cat_imp_nome').val(item.cat_imp_nome);
-        $('#cat_imp_cor').val(item.cat_imp_cor);
-        if (item.cat_imp_ativo) {
-            $('#cat_imp_ativo').prop('checked', true);
+        $('#pes_id').val(item.pes_id);
+        $('#pes_nome').val(item.pes_nome);
+        $('#pes_email').val(item.pes_email);
+        if (item.pes_ativo) {
+            $('#pes_ativo').prop('checked', true);
         } else {
-            $('#cat_imp_ativo').prop('checked', false);
+            $('#pes_ativo').prop('checked', false);
         }
-        $('#cat_imp_btn_salvar').val('update');
+        $('#pes_btn_salvar').val('update');
         $('[href="#kt_tab_pane_1"]').tab('show');
-        $('#frm_cat_imp_modal').modal('show');
+        $('#frm_pes_modal').modal('show');
     })
     .fail(function (jqxhr, settings, ex) {
         exibeDialogo(result.responseText, tipoAviso.ERRO);
     });
 }
 
-function cat_imp_del(cat_imp_id) {
+function pes_del(pes_id) {
     Swal.fire({
         title: "Deseja executar esta operação?",
-        text: "O registro " + cat_imp_id + " será removido permanentemente.",
+        text: "O registro " + pes_id + " será removido permanentemente.",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "Ok, desejo remover!",
@@ -225,10 +225,10 @@ function cat_imp_del(cat_imp_id) {
         if (result.value) {
             var dados = new FormData();
                 dados.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
-                dados.append("cat_imp_id",cat_imp_id);
+                dados.append("pes_id",pes_id);
             $.ajax({
                 method: 'POST',
-                url:'/categorias/cat_imp_del/',
+                url:'/categorias/cat_pes_del/',
                 data:  dados,
                 contentType: false,
                 cache: false,
@@ -249,8 +249,8 @@ function cat_imp_del(cat_imp_id) {
             .done(function(data,  textStatus, jqXHR){
                 console.log(jqXHR);
                 if (jqXHR.status === 200 && jqXHR.readyState === 4){
-                    $('#kt_cat_imp').DataTable().ajax.reload();
-                    $('#frm_cat_imp_modal').modal('hide');
+                    $('#kt_pes').DataTable().ajax.reload();
+                    $('#frm_pes_modal').modal('hide');
                     Swal.close();
                 }
             })
