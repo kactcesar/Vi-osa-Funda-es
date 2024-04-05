@@ -33,7 +33,11 @@ urlpatterns = [
     path('cat_tip_edt/', cat_tip_edt, name='cat_tip_edt'),
     path('cat_tip_del/', cat_tip_del, name='cat_tip_del'),
 
-
-
+    path('cat_prod_index', cat_prod_index, name='index'),
+    path('cat_prod_lista/', cat_prod_lista, name='cat_prod_lista'),
+    path('cat_prod_atb/', cat_prod_atb, name='cat_prod_atb'),
+    path('cat_prod_add/', cat_prod_add, name='cat_prod_add'),
+    path('cat_prod_edt/', cat_prod_edt, name='cat_prod_edt'),
+    path('cat_prod_del/', cat_prod_del, name='cat_prod_del'),
 
 ]

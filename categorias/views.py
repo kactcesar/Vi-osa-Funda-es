@@ -151,7 +151,7 @@ def cat_imp_edt(request):
         print(error)
         return JsonResponse({
             'error': str(error),
-            'aviso': 'Erro ao editar a pessoa'},
+            'aviso': 'Erro ao editar o Impacto'},
             status=500)
     else:
         return JsonResponse({
@@ -168,7 +168,7 @@ def cat_imp_del(request):
         print(error)
         return JsonResponse({
             'error': str(error),
-            'aviso': 'Erro ao deletar a Pessoa'
+            'aviso': 'Erro ao deletar o Impacto '
         }, status=500)
     else:
         return JsonResponse({
@@ -219,7 +219,7 @@ def cat_sta_add(request):
         print(error)
         return JsonResponse({
             'error': str(error),
-            'aviso': 'Erro ao adicionar a pessoa'},
+            'aviso': 'Erro ao adicionar o Status'},
             status=500)
     else:
         return JsonResponse({
@@ -240,7 +240,7 @@ def cat_sta_edt(request):
         print(error)
         return JsonResponse({
             'error': str(error),
-            'aviso': 'Erro ao editar a pessoa'},
+            'aviso': 'Erro ao editar o Status'},
             status=500)
     else:
         return JsonResponse({
@@ -257,7 +257,7 @@ def cat_sta_del(request):
         print(error)
         return JsonResponse({
             'error': str(error),
-            'aviso': 'Erro ao deletar a Pessoa'
+            'aviso': 'Erro ao deletar o Status'
         }, status=500)
     else:
         return JsonResponse({
@@ -306,7 +306,7 @@ def cat_tip_add(request):
         print(error)
         return JsonResponse({
             'error': str(error),
-            'aviso': 'Erro ao adicionar a pessoa'},
+            'aviso': 'Erro ao adicionar o Tipo'},
             status=500)
     else:
         return JsonResponse({
@@ -327,7 +327,7 @@ def cat_tip_edt(request):
         print(error)
         return JsonResponse({
             'error': str(error),
-            'aviso': 'Erro ao editar a pessoa'},
+            'aviso': 'Erro ao editar o Tipo'},
             status=500)
     else:
         return JsonResponse({
@@ -344,7 +344,94 @@ def cat_tip_del(request):
         print(error)
         return JsonResponse({
             'error': str(error),
-            'aviso': 'Erro ao deletar a Pessoa'
+            'aviso': 'Erro ao deletar o Tipo'
+        }, status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Excluido com sucesso!'
+        }, status=200)
+        
+##################################################################### categoria Porduto ########################################################################### ########## 
+        
+def cat_prod_index(request):
+    return render(request, 'categoria produto/cat_prod_index.html')
+
+def cat_prod_lista(request):
+    try:
+        dados = CategoriaProdutoSerializer(CategoriaProduto.objects.all().order_by('cat_prod_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Problema ao consultar os dados'
+        }, status=500)
+    else:
+        return JsonResponse({'dados': dados.data})
+    
+    
+def cat_prod_atb(request):
+    try:
+        item = CategoriaProdutoSerializer(CategoriaProduto.objects.get(pk=request.GET['id']))
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(item.data) 
+
+def cat_prod_add(request):
+    try:
+        item=CategoriaProduto()
+        item.cat_prod_nome=request.POST['cat_prod_nome']
+        item.cat_prod_cor=request.POST['cat_prod_cor']
+        item.cat_prod_ativo = request.POST.get('cat_prod_ativo') == 'on'
+        item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao adicionar a produto'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Adicionado com sucesso!'},
+            status=200)
+
+def cat_prod_edt(request):
+    try:
+        item = CategoriaProduto.objects.get(pk=request.POST['cat_prod_id'])
+        if request.method=="POST":
+            item.cat_prod_id=request.POST['cat_prod_id']
+            item.cat_prod_nome=request.POST['cat_prod_nome']
+            item.cat_prod_ativo = request.POST.get('cat_prod_ativo') == 'on'
+            item.cat_prod_cor=request.POST['cat_prod_cor']
+            item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao editar a produto'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Editado com sucesso!'},
+            status=200)
+    
+def cat_prod_del(request):
+    try:
+        if request.method == "POST":
+            item = CategoriaProduto.objects.get(pk=request.POST['cat_prod_id'])
+            item.delete()
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao deletar a Produto'
         }, status=500)
     else:
         return JsonResponse({

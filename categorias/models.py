@@ -54,3 +54,21 @@ class CategoriaTipo(models.Model):
     class Meta:
         managed = False
         db_table = 'categoriatipo'
+        
+        
+class CategoriaProduto(models.Model):
+    
+    cat_prod_id = models.BigAutoField(primary_key=True)
+    cat_prod_nome = models.CharField(max_length=255)
+    cat_prod_cor = models.CharField(max_length=255)
+    cat_prod_ativo = models.BooleanField(default=True)
+    usu_cad_dta = models.DateField(auto_now_add=True)
+    usu_alt_dta = models.DateField(auto_now=True)
+    usu_cad = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE, related_name='usu_cad_prod')
+    usu_alt = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE, related_name='usu_alt_prod')
+    
+    
+    class Meta:
+        managed = False
+        db_table = 'categoriaproduto'
+        
