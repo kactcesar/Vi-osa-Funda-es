@@ -20,3 +20,10 @@ class CategoriaStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoriaStatus
         fields = '__all__'  
+        
+
+class CategoriaTipoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CategoriaTipo
+        fields = '__all__'  

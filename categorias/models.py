@@ -32,10 +32,25 @@ class CategoriaStatus(models.Model):
     cat_sta_ativo = models.BooleanField(default=True)
     usu_cad_dta = models.DateField(auto_now_add=True)
     usu_alt_dta = models.DateField(auto_now=True)
-    usu_cad = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE, related_name='usuario_cadastro')
-    usu_alt= models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE, related_name='usuario_alteracao')
+    usu_cad = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE, related_name='usu_cad_sta')
+    usu_alt = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE, related_name='usu_alt_sta')
 
     
     class Meta:
         managed = False
         db_table = 'categoriastatus'
+        
+        
+class CategoriaTipo(models.Model):
+    cat_tip_id = models.BigAutoField(primary_key=True)
+    cat_tip_nome = models.CharField(max_length=255)
+    cat_tip_cor = models.CharField(max_length=255)
+    cat_tip_ativo = models.BooleanField(default=True)
+    usu_cad_dta = models.DateField(auto_now_add=True)
+    usu_alt_dta = models.DateField(auto_now=True)
+    usu_cad = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE, related_name='usu_cad_tip')
+    usu_alt = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE, related_name='usu_alt_tip')
+    
+    class Meta:
+        managed = False
+        db_table = 'categoriatipo'

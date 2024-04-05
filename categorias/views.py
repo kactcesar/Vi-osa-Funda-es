@@ -264,4 +264,90 @@ def cat_sta_del(request):
             'item': None,
             'aviso': 'Excluido com sucesso!'
         }, status=200)
-        
+
+################################################################## Categoria Tipo #######################################################################       
+
+def cat_tip_index(request):
+    return render(request, 'categoria tipo/cat_tip_index.html')
+
+def cat_tip_lista(request):
+    try:
+        dados = CategoriaTipoSerializer(CategoriaTipo.objects.all().order_by('cat_tip_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Problema ao consultar os dados'
+        }, status=500)
+    else:
+        return JsonResponse({'dados': dados.data})
+    
+    
+def cat_tip_atb(request):
+    try:
+        item = CategoriaTipoSerializer(CategoriaTipo.objects.get(pk=request.GET['id']))
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(item.data) 
+
+def cat_tip_add(request):
+    try:
+        item = CategoriaTipo()
+        item.cat_tip_nome=request.POST['cat_tip_nome']
+        item.cat_tip_cor=request.POST['cat_tip_cor']
+        item.cat_tip_ativo = request.POST.get('cat_tip_ativo') == 'on'
+        item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao adicionar a pessoa'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Adicionado com sucesso!'},
+            status=200)
+
+def cat_tip_edt(request):
+    try:
+        item = CategoriaTipo.objects.get(pk=request.POST['cat_tip_id'])
+        if request.method=="POST":
+            item.cat_tip_id=request.POST['cat_tip_id']
+            item.cat_tip_nome=request.POST['cat_tip_nome']
+            item.cat_tip_ativo = request.POST.get('cat_ttip_ativo') == 'on'
+            item.cat_tip_cor=request.POST['cat_tip_cor']
+            item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao editar a pessoa'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Editado com sucesso!'},
+            status=200)
+    
+def cat_tip_del(request):
+    try:
+        if request.method == "POST":
+            item = CategoriaTipo.objects.get(pk=request.POST['cat_tip_id'])
+            item.delete()
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao deletar a Pessoa'
+        }, status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Excluido com sucesso!'
+        }, status=200)
