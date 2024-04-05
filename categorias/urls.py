@@ -5,7 +5,7 @@ app_name = 'categorias'
 
 urlpatterns = [
     
-    path('cat_menu_index', cat_menu_index, name='index'),
+    
     
     path('', cat_imp_index, name='cat_imp_index'),
     path('cat_imp_lista/', cat_imp_lista, name='cat_imp_lista'),

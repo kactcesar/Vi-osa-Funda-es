@@ -441,7 +441,3 @@ def cat_prod_del(request):
 
 
 ####################################################################### Menu Categoria #############################################################################
-
-
-def cat_menu_index(request):
-    return render(request, 'categoria menu/cat_menu_index.html')
