@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'vicosafundacoes.apps.VicosafundacoesConfig',
+    'base.apps.BaseConfig',
+    'categorias.apps.CategoriasConfig',
+    
     
 ]
 
