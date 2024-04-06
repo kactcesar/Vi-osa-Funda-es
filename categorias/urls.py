@@ -43,4 +43,10 @@ urlpatterns = [
     path('cat_prod_del/', cat_prod_del, name='cat_prod_del'),
 
 
+                        #Url Select2
+    path('pesq_impacto/',pesq_impacto, name='pesq_impacto'),
+    path('pesq_status/',pesq_status, name='pesq_status'),
+    path('pesq_produto/',pesq_produto, name='pesq_produto'),
+    path('pesq_tipo/',pesq_tipo, name='pesq_tipo'),
+
 ]

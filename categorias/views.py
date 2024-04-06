@@ -440,4 +440,67 @@ def cat_prod_del(request):
         }, status=200)
 
 
-####################################################################### Menu Categoria #############################################################################
+####################################################################### pesq controls #############################################################################
+def pesq_impacto(request):
+    try:
+        if 'term' in request.GET:
+            dados = CategoriaImpactoSerializer(CategoriaImpacto.objects.filter(nome__icontains=request.GET['term']).order_by('cat_imp_nome'), many=True)
+        else:
+            dados = CategoriaImpactoSerializer(CategoriaImpacto.objects.all().order_by('cat_imp_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(dados.data, safe=False)
+    
+    
+def pesq_status(request):
+    try:
+        if 'term' in request.GET:
+            dados = CategoriaStatusSerializer(CategoriaStatus.objects.filter(nome__icontains=request.GET['term']).order_by('cat_sta_nome'), many=True)
+        else:
+            dados = CategoriaStatusSerializer(CategoriaStatus.objects.all().order_by('cat_sta_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(dados.data, safe=False)
+    
+def pesq_tipo(request):
+    try:
+        if 'term' in request.GET:
+            dados = CategoriaTipoSerializer(CategoriaTipo.objects.filter(nome__icontains=request.GET['term']).order_by('cat_tip_nome'), many=True)
+        else:
+            dados = CategoriaTipoSerializer(CategoriaTipo.objects.all().order_by('cat_tip_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(dados.data, safe=False)
+    
+
+def pesq_produto(request):
+    try:
+        if 'term' in request.GET:
+            dados = CategoriaProdutoSerializer(CategoriaProduto.objects.filter(nome__icontains=request.GET['term']).order_by('cat_prod_nome'), many=True)
+        else:
+            dados = CategoriaProdutoSerializer(CategoriaProduto.objects.all().order_by('cat_prod_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({''
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(dados.data, safe=False)
+    
+    
