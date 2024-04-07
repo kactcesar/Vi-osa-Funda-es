@@ -19,6 +19,10 @@
     <link href="{% static 'assets/css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'assets/plugins/custom/datatables/datatables.bundle.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'assets/js/viewerjs/viewer.css' %}" type="text/css" rel="stylesheet" />
+
+    <link href="{% static 'assets/css/pages/users/login-3.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.css' %}" rel="stylesheet" type="text/css" />
     <!--end::Global Theme Styles-->
     <link rel="shortcut icon" href="{% static 'assets/media/logos/favicon.ico' %}" />
     {% block style %}
@@ -42,10 +46,14 @@
     <script src="{% static 'assets/js/pages/crud/forms/widgets/select2.js' %}"></script>
     <script src="{% static 'assets/plugins/custom/datatables/datatables.bundle.js' %}"></script>
     <script src="{% static 'assets/js/viewerjs/viewer.js' %}"></script>    
-    
+    <a href="{% url 'base:register' %}"> Registre aqui </a>
+    <a href="{% url 'base:my-login' %}"> Login aqui </a>
+
+    <br> <br> 
     {% block script %}
     {% endblock %}
     <title>Viçosa Fundações</title>
+    
 </head>
 <body>
     <ul class="nav nav-tabs bg-primary" id="myTab" role="tablist">
