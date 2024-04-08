@@ -7,53 +7,33 @@
     <meta name="description" content="Updates and statistics" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <link rel="canonical" href="https://keenthemes.com/metronic" />
-    <!--begin::Fonts-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
-    <!--end::Fonts-->
-    <!--begin::Page Vendors Styles(used by this page)-->
     <link href="{% static 'assets/plugins/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" />
-    <!--end::Page Vendors Styles-->
-    <!--begin::Global Theme Styles(used by all pages)-->
     <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'assets/css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'assets/plugins/custom/datatables/datatables.bundle.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'assets/js/viewerjs/viewer.css' %}" type="text/css" rel="stylesheet" />
-
     <link href="{% static 'assets/css/pages/users/login-3.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.css' %}" rel="stylesheet" type="text/css" />
-    <!--end::Global Theme Styles-->
     <link rel="shortcut icon" href="{% static 'assets/media/logos/favicon.ico' %}" />
     {% block style %}
     {% endblock %}
     <script>var HOST_URL = "https://preview.keenthemes.com/metronic/theme/html/tools/preview";</script>
-    <!--begin::Global Config(global config for global JS scripts)-->
     <script>var KTAppSettings = { "breakpoints": { "sm": 576, "md": 768, "lg": 992, "xl": 1200, "xxl": 1200 }, "colors": { "theme": { "base": { "white": "#ffffff", "primary": "#0BB783", "secondary": "#E5EAEE", "success": "#1BC5BD", "info": "#8950FC", "warning": "#FFA800", "danger": "#F64E60", "light": "#F3F6F9", "dark": "#212121" }, "light": { "white": "#ffffff", "primary": "#D7F9EF", "secondary": "#ECF0F3", "success": "#C9F7F5", "info": "#EEE5FF", "warning": "#FFF4DE", "danger": "#FFE2E5", "light": "#F3F6F9", "dark": "#D6D6E0" }, "inverse": { "white": "#ffffff", "primary": "#ffffff", "secondary": "#212121", "success": "#ffffff", "info": "#ffffff", "warning": "#ffffff", "danger": "#ffffff", "light": "#464E5F", "dark": "#ffffff" } }, "gray": { "gray-100": "#F3F6F9", "gray-200": "#ECF0F3", "gray-300": "#E5EAEE", "gray-400": "#D6D6E0", "gray-500": "#B5B5C3", "gray-600": "#80808F", "gray-700": "#464E5F", "gray-800": "#1B283F", "gray-900": "#212121" } }, "font-family": "Poppins" };</script>
-    <!--end::Global Config-->
-    <!--begin::Global Theme Bundle(used by all pages)-->
     <script src="{% static 'assets/plugins/global/plugins.bundle.js' %}"></script>
     <script src="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.js' %}"></script>
     <script src="{% static 'assets/js/scripts.bundle.js' %}"></script>
-    <!--end::Global Theme Bundle-->
-    <!--begin::Page Vendors(used by this page)-->
     <script src="{% static 'assets/plugins/custom/fullcalendar/fullcalendar.bundle.js' %}"></script>
-    <!--end::Page Vendors-->
-    <!--begin::Page Scripts(used by this page)-->
     <script src="{% static 'assets/js/pages/widgets.js' %}"></script>
     <script src="{% static 'assets/js/funcoes.js' %}"></script>
-    <!--end::Page Scripts-->
     <script src="{% static 'assets/js/pages/crud/forms/widgets/select2.js' %}"></script>
     <script src="{% static 'assets/plugins/custom/datatables/datatables.bundle.js' %}"></script>
-    <script src="{% static 'assets/js/viewerjs/viewer.js' %}"></script>    
-    <a href="{% url 'base:register' %}"> Registre aqui </a>
-    <a href="{% url 'base:my-login' %}"> Login aqui </a>
-
-    <br> <br> 
+    <script src="{% static 'assets/js/viewerjs/viewer.js' %}"></script>
     {% block script %}
     {% endblock %}
     <title>Viçosa Fundações</title>
-    
 </head>
 <body>
     <ul class="nav nav-tabs bg-primary" id="myTab" role="tablist">
@@ -96,8 +76,76 @@
                 <a class="nav-link font-weight-bold " href="{% url 'base:sair' %}"><i class="fas fa-sign-out-alt">Sair</i></a>
             </li>
         </div>
-        
+        <div class="topbar-item" align="right">
+            <div class="btn btn-icon btn-hover-transparent-white w-auto d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle">
+                <div class="d-flex flex-column text-right pr-3">
+                    <span class="text-white opacity-50 font-weight-bold font-size-sm d-none d-md-inline"> {{ request.user.username }}</span>
+                    <span class="text-white font-weight-bolder font-size-sm d-none d-md-inline">Viçosa Fundações</span>
+                </div>
+                <span class="symbol symbol-35">
+                    <span class="symbol-label font-size-h5 font-weight-bold text-white bg-white-o-30">{{ user.username|slice:":1"|capfirst }}</span>
+                </span>
+            </div>
+        </div>
+        <div id="kt_quick_user" class="offcanvas offcanvas-right p-10">
+            <!-- Cabeçalho do Perfil do Usuário -->
+            <div class="offcanvas-header d-flex align-items-center justify-content-between pb-5">
+                <h3 class="font-weight-bold m-0">Perfil de Usuário <small class="text-muted font-size-sm ml-2"></small></h3>
+                <a href="#" class="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close">
+                    <i class="ki ki-close icon-xs text-muted"></i>
+                </a>
+            </div>
+            <!-- Conteúdo do Perfil do Usuário -->
+            <div class="offcanvas-content pr-5 mr-n5">
+                <!-- Informações do Perfil do Usuário -->
+                <div class="d-flex align-items-center mt-5">
+                    <!-- Imagem do Usuário -->
+                    <div class="symbol symbol-100 mr-5">
+                        <div class="symbol-label" style="background-image:url('assets/media/users/300_21.jpg')"></div>
+                        <i class="symbol-badge bg-success"></i>
+                    </div>
+                    <!-- Informações do Usuário -->
+                    <div class="d-flex flex-column">
+                        <a href="#" class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary">{{ request.user.username }}</a>
+                        <div class="text-muted mt-1">{{ user.email }}</div>
+                        <!-- Informações de Contato -->
+                        <div class="navi mt-2">
+                            <a href="#" class="navi-item">
+                                <span class="navi-link p-0 pb-2">
+                                    <span class="navi-icon mr-1">
+                                        <span class="svg-icon svg-icon-lg svg-icon-primary">
+                                            <!-- Ícone de E-mail -->
+                                        </span>
+                                    </span>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Links do Perfil do Usuário -->
+                <div class="navi navi-spacer-x-0 p-0">
+                    <!-- Link "My Profile" -->
+                    <a href="custom/apps/user/profile-1/personal-information.html" class="navi-item">
+                        <a href="{% url 'base:register' %}"> Registre aqui </a>
+                        
+                    </a>
+                    <!-- Link "My Messages" -->
+                    <a href="custom/apps/user/profile-3.html" class="navi-item">
+                        <a href="{% url 'base:my-login' %}"> Login aqui </a>
+                    </a>
+                    <!-- Link "My Activities" -->
+                    <a href="custom/apps/user/profile-2.html" class="navi-item">
+                        <a href="{% url 'base:user-logout' %}"> Sair </a>
+                    </a>
+                    <!-- Link "My Tasks" -->
+                    <a href="custom/apps/userprofile-1/overview.html" class="navi-item">
+                        <!-- Ícone e Texto do Link -->
+                    </a>
+                </div>
+            </div>
+        </div>
     </ul>  
+    
     <div id="content" class="container">
         {% block content %}
         {% endblock %}
