@@ -1,12 +1,18 @@
 
 
 function pes_add(){
+    var url
+    if($('#pes_btn_salvar').val() == 'update'){
+        url = '/vicosafundacoes/pes_edt/'
+    }else{
+        url = '/vicosafundacoes/pes_add/'
+    }
 
     var frm_pes = new FormData(document.getElementById('frm_pes'));
 
     $.ajax({
         method: 'POST',
-        url:'/vicosafundacoes/pes_add/',
+        url:url,
         data: frm_pes,
         contentType: false,
         cache: false,
@@ -86,7 +92,7 @@ function pes_del(pes_id) {
                 dados.append("pes_id",pes_id);
             $.ajax({
                 method: 'POST',
-                url:'/categorias/cat_pes_del/',
+                url:'/vicosafundacoes/cat_pes_del/',
                 data:  dados,
                 contentType: false,
                 cache: false,

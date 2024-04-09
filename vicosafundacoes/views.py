@@ -1,7 +1,6 @@
 
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from .models import *
 from django.http import JsonResponse
@@ -11,20 +10,16 @@ from django.db import DatabaseError
 from .forms import *
 from django.shortcuts import render, redirect
 from . forms import CreateUserForm, LoginForm
-
-
-
-# - Authentication models and functions
-
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
 
 
 
-
+@login_required(login_url="vicosafundacoes:my-login")
 def index(request):
     return render(request, 'vicosafundacoes/base.html')
 
+@login_required(login_url="vicosafundacoes:my-login")
 def entrar(request):
     if request.method == 'POST':
         user = authenticate(username=request.POST['username'], password=request.POST['password'])
@@ -38,13 +33,13 @@ def entrar(request):
     else:
         return render(request, 'vicosafundacoes/login.html')   
         
-        
+@login_required(login_url="vicosafundacoes:my-login")       
 def sair(request):
     logout(request)
     return HttpResponseRedirect(reverse(':entrar'))        
 ################################################################################################################################
 
-
+@login_required(login_url="vicosafundacoes:my-login")
 def homepage(request):
 
     return render(request, 'vicosafundacoes/base.html')
@@ -106,7 +101,7 @@ def user_logout(request):
 
 
 
-@login_required(login_url="vicosafundacoes:my-login")
+
 def dashboard(request):
 
     return render(request, 'vicosafundacoes/dashboard.html')
@@ -132,7 +127,7 @@ def pes_lista():
     else:
         return JsonResponse({'dados': dados.data})
     
-@login_required(login_url="base:my-login")   
+@login_required(login_url="vicosafundacoes:my-login")
 def pes_atb(request):
     try:
         item = PessoaSerializer(Pessoa.objects.get(pk=request.GET['id']))
@@ -145,7 +140,7 @@ def pes_atb(request):
     else:
         return JsonResponse(item.data)
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def pes_add(request):
     try:
         item=Pessoa()
@@ -170,7 +165,7 @@ def pes_add(request):
             'aviso': 'Adicionado com sucesso!'},
             status=200)
         
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def pes_edt(request):
     try:
         item = Pessoa.objects.get(pk=request.POST['pes_id'])
@@ -194,7 +189,7 @@ def pes_edt(request):
             'aviso': 'Editado com sucesso!'},
             status=200)
         
-@login_required(login_url="base:my-login")   
+@login_required(login_url="vicosafundacoes:my-login")
 def pes_del(request):
     try:
         if request.method == "POST":

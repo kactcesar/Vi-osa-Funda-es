@@ -8,11 +8,11 @@ from .forms import *
 from django.contrib.auth.decorators import login_required
 
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_pes_index(request):
     return render(request, 'categoria pessoa/pes_index.html')
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_pes_lista(request):
     try:
         dados= CategoriaPessoaSerializer(CategoriaPessoa.objects.all().order_by('pes_nome'), many=True)
@@ -25,7 +25,7 @@ def cat_pes_lista(request):
     else:
         return JsonResponse({'dados':dados.data})
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_pes_atb(request):
     try:
         item = CategoriaPessoaSerializer(CategoriaPessoa.objects.get(pk=request.GET['id']))
@@ -38,7 +38,7 @@ def cat_pes_atb(request):
     else:
         return JsonResponse(item.data) 
     
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_pes_add(request):
     try:
         item=CategoriaPessoa()
@@ -58,7 +58,7 @@ def cat_pes_add(request):
             'aviso': 'Adicionado com sucesso!'},
             status=200)
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_pes_edt(request):
     try:
         item=CategoriaPessoa.objects.get(pk=request.POST['pes_id'])
@@ -80,7 +80,7 @@ def cat_pes_edt(request):
             'aviso': 'Editado com sucesso!'},
             status=200)
 
-@login_required(login_url="base:my-login")   
+@login_required(login_url="vicosafundacoes:my-login")   
 def cat_pes_del(request):
     try:
         if request.method=="POST":
@@ -101,11 +101,11 @@ def cat_pes_del(request):
 
 
 ###############################################categoria Impacto######################################################################################################################
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_imp_index(request):
     return render(request, 'categoria impacto/index.html')
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_imp_lista(request):
     try:
         dados = CategoriaImpactoSerializer(CategoriaImpacto.objects.all().order_by('cat_imp_nome'), many=True)
@@ -118,7 +118,7 @@ def cat_imp_lista(request):
     else:
         return JsonResponse({'dados': dados.data})
     
-@login_required(login_url="base:my-login") 
+@login_required(login_url="vicosafundacoes:my-login") 
 def cat_imp_atb(request):
     try:
         item = CategoriaImpactoSerializer(CategoriaImpacto.objects.get(pk=request.GET['id']))
@@ -131,7 +131,7 @@ def cat_imp_atb(request):
     else:
         return JsonResponse(item.data) 
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_imp_add(request):
     if request.method == 'POST':
         form = CategoriaImpactoForm(request.POST)
@@ -145,7 +145,7 @@ def cat_imp_add(request):
         form = CategoriaImpactoForm()
     return render(request, 'template.html', {'form': form})
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_imp_edt(request):
     try:
         item = CategoriaImpacto.objects.get(pk=request.POST['cat_imp_id'])
@@ -167,7 +167,7 @@ def cat_imp_edt(request):
             'aviso': 'Editado com sucesso!'},
             status=200)
 
-@login_required(login_url="base:my-login")   
+@login_required(login_url="vicosafundacoes:my-login")   
 def cat_imp_del(request):
     try:
         if request.method == "POST":
@@ -189,11 +189,11 @@ def cat_imp_del(request):
         
 ################################################################## Categoria Status ################################################################################################
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_sta_index(request):
     return render(request, 'categoria status/cat_sta_index.html')
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_sta_lista(request):
     try:
         dados = CategoriaStatusSerializer(CategoriaStatus.objects.all().order_by('cat_sta_nome'), many=True)
@@ -206,7 +206,7 @@ def cat_sta_lista(request):
     else:
         return JsonResponse({'dados': dados.data})
     
-@login_required(login_url="base:my-login")   
+@login_required(login_url="vicosafundacoes:my-login")   
 def cat_sta_atb(request):
     try:
         item = CategoriaStatusSerializer(CategoriaStatus.objects.get(pk=request.GET['id']))
@@ -219,7 +219,7 @@ def cat_sta_atb(request):
     else:
         return JsonResponse(item.data) 
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_sta_add(request):
     try:
         item=CategoriaStatus()
@@ -239,7 +239,7 @@ def cat_sta_add(request):
             'aviso': 'Adicionado com sucesso!'},
             status=200)
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_sta_edt(request):
     try:
         item = CategoriaStatus.objects.get(pk=request.POST['cat_sta_id'])
@@ -261,7 +261,7 @@ def cat_sta_edt(request):
             'aviso': 'Editado com sucesso!'},
             status=200)
 
-@login_required(login_url="base:my-login")   
+@login_required(login_url="vicosafundacoes:my-login")   
 def cat_sta_del(request):
     try:
         if request.method == "POST":
@@ -281,11 +281,11 @@ def cat_sta_del(request):
 
 ################################################################## Categoria Tipo #######################################################################       
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_tip_index(request):
     return render(request, 'categoria tipo/cat_tip_index.html')
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_tip_lista(request):
     try:
         dados = CategoriaTipoSerializer(CategoriaTipo.objects.all().order_by('cat_tip_nome'), many=True)
@@ -298,7 +298,7 @@ def cat_tip_lista(request):
     else:
         return JsonResponse({'dados': dados.data})
     
-@login_required(login_url="base:my-login")  
+@login_required(login_url="vicosafundacoes:my-login")  
 def cat_tip_atb(request):
     try:
         item = CategoriaTipoSerializer(CategoriaTipo.objects.get(pk=request.GET['id']))
@@ -311,7 +311,7 @@ def cat_tip_atb(request):
     else:
         return JsonResponse(item.data)
     
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_tip_add(request):
     try:
         item = CategoriaTipo()
@@ -331,7 +331,7 @@ def cat_tip_add(request):
             'aviso': 'Adicionado com sucesso!'},
             status=200)
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_tip_edt(request):
     try:
         item = CategoriaTipo.objects.get(pk=request.POST['cat_tip_id'])
@@ -353,7 +353,7 @@ def cat_tip_edt(request):
             'aviso': 'Editado com sucesso!'},
             status=200)
         
-@login_required(login_url="base:my-login")   
+@login_required(login_url="vicosafundacoes:my-login")   
 def cat_tip_del(request):
     try:
         if request.method == "POST":
@@ -373,11 +373,11 @@ def cat_tip_del(request):
         
 ##################################################################### categoria Porduto ########################################################################### ########## 
 
-@login_required(login_url="base:my-login")        
+@login_required(login_url="vicosafundacoes:my-login")        
 def cat_prod_index(request):
     return render(request, 'categoria produto/cat_prod_index.html')
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_prod_lista(request):
     try:
         dados = CategoriaProdutoSerializer(CategoriaProduto.objects.all().order_by('cat_prod_nome'), many=True)
@@ -390,7 +390,7 @@ def cat_prod_lista(request):
     else:
         return JsonResponse({'dados': dados.data})
     
-@login_required(login_url="base:my-login")   
+@login_required(login_url="vicosafundacoes:my-login")   
 def cat_prod_atb(request):
     try:
         item = CategoriaProdutoSerializer(CategoriaProduto.objects.get(pk=request.GET['id']))
@@ -403,7 +403,7 @@ def cat_prod_atb(request):
     else:
         return JsonResponse(item.data)
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_prod_add(request):
     try:
         item=CategoriaProduto()
@@ -423,7 +423,7 @@ def cat_prod_add(request):
             'aviso': 'Adicionado com sucesso!'},
             status=200)
         
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def cat_prod_edt(request):
     try:
         item = CategoriaProduto.objects.get(pk=request.POST['cat_prod_id'])
@@ -445,7 +445,7 @@ def cat_prod_edt(request):
             'aviso': 'Editado com sucesso!'},
             status=200)
         
-@login_required(login_url="base:my-login")   
+@login_required(login_url="vicosafundacoes:my-login")   
 def cat_prod_del(request):
     try:
         if request.method == "POST":
@@ -464,7 +464,7 @@ def cat_prod_del(request):
         }, status=200)
 
 ####################################################################### pesq controls #############################################################################
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 
 def pesq_impacto(request):
     try:
@@ -482,7 +482,7 @@ def pesq_impacto(request):
         return JsonResponse(dados.data, safe=False)
     
 
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def pesq_status(request):
     try:
         if 'term' in request.GET:
@@ -498,7 +498,7 @@ def pesq_status(request):
     else:
         return JsonResponse(dados.data, safe=False)
 
-@login_required(login_url="base:my-login")  
+@login_required(login_url="vicosafundacoes:my-login")  
 def pesq_tipo(request):
     try:
         if 'term' in request.GET:
@@ -514,7 +514,7 @@ def pesq_tipo(request):
     else:
         return JsonResponse(dados.data, safe=False)
     
-@login_required(login_url="base:my-login")
+@login_required(login_url="vicosafundacoes:my-login")
 def pesq_produto(request):
     try:
         if 'term' in request.GET:
