@@ -17,7 +17,7 @@
     <link href="{% static 'assets/css/pages/users/login-3.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'assets/plugins/custom/prismjs/prismjs.bundle.css' %}" rel="stylesheet" type="text/css" />
-    <link rel="shortcut icon" href="{% static 'assets/media/logos/favicon.ico' %}" />
+    <link rel="shortcut icon" href="{% static 'assets/media/logos/vf.png' %}" />
     {% block style %}
     {% endblock %}
     <script>var HOST_URL = "https://preview.keenthemes.com/metronic/theme/html/tools/preview";</script>
@@ -41,7 +41,7 @@
             <li class="nav-item ">
                 <div id="kt_header_mobile" class="header-mobile bg-primary header-mobile-fixed">
                     <!--begin::Logo-->
-                    <a href="index.html">
+                    <a href="{% url 'vicosafundacoes:index' %}">
                         <img alt="Logo" src="{% static 'assets/media/logos/vf.png' %}" class="max-h-30px" />
                     </a>
                     <div class="d-flex align-items-center">
@@ -80,7 +80,7 @@
 								<!--begin::Left-->
 								<div class="d-none d-lg-flex align-items-center mr-3">
 									<!--begin::Logo-->
-									<a href="index.html" class="mr-20">
+									<a href="{% url 'vicosafundacoes:index' %}" class="mr-20">
 										<img alt="Logo" src="{% static 'assets/media/logos/vf.png' %}" class="max-h-35px" />
 									</a>
 								</div>
@@ -181,7 +181,7 @@
                                                     </div>
                                                     <div class="navi navi-bold navi-hover navi-active navi-link-rounded">
                                                         <div class="navi-item mb-2">
-                                                            <a href="custom/apps/profile/profile-1/overview.html" class="navi-link py-4">
+                                                            <a href="{% url 'vicosafundacoes:user_dados' %}" class="navi-link py-4">
                                                                 <span class="navi-icon mr-2">
                                                                     <span class="svg-icon">
                                                                         <!--begin::Svg Icon | path:assets/media/svg/icons/Design/Layers.svg-->
@@ -199,7 +199,7 @@
                                                             </a>
                                                         </div>
                                                         <div class="navi-item mb-2">
-                                                            <a href="{% url 'base:register' %}" class="navi-link py-4">
+                                                            <a href="{% url 'vicosafundacoes:register' %}" class="navi-link py-4">
                                                                 <span class="navi-icon mr-2">
                                                                     <span class="svg-icon">
                                                                         <!--begin::Svg Icon | path:assets/media/svg/icons/General/User.svg-->
@@ -217,7 +217,7 @@
                                                             </a>
                                                         </div>
                                                         <div class="navi-item mb-2">
-                                                            <a href="{% url 'base:user-logout' %}" class="navi-link py-4 active">
+                                                            <a href="{% url 'vicosafundacoes:user-logout' %}" class="navi-link py-4 active">
                                                                 <span class="navi-icon mr-2">
                                                                     <span class="svg-icon">
                                                                         <!--begin::Svg Icon | path:assets/media/svg/icons/Code/Compiling.svg-->
@@ -324,7 +324,7 @@
         {% endblock %}
     </div>
     <!--begin::Footer-->
-    <div class="footer bg-primary py-4 d-flex flex-lg-column fixed-bottom" style="box-shadow: 0 -5px 5px #b2c9b5;" id="kt_footer">
+    <div class="footer bg-primary py-4 d-flex flex-lg-column fixed-bottom" style="box-shadow: 0 -5px 5px ##00008B;" id="kt_footer">
         <!--begin::Container-->
         <div class="d-flex flex-column flex-md-row align-items-center justify-content-center">
             <!--begin::Copyright-->
