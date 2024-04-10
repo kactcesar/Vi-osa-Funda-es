@@ -8,7 +8,7 @@ from .models import *
 from vicosafundacoes.serializador import *
 from django.db import DatabaseError
 from .forms import *
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from . forms import CreateUserForm, LoginForm
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login, logout
@@ -117,7 +117,14 @@ def user_dados(request):
 @login_required(login_url="base:my-login")
 def pes_lista(request):
     try:
-        dados = PessoaSerializer(Pessoa.objects.all().order_by('pes_nome'), many=True)
+        # Obtendo o ID do usuário logado
+        user_id = request.user.id
+        
+        # Obtendo o usuário logado
+        user = get_object_or_404(User, pk=user_id)
+        
+        # Filtrando as informações da tabela Pessoa usando o ID do usuário logado
+        dados = PessoaSerializer(Pessoa.objects.filter(pes_adm_id=user.id).order_by('pes_nome'), many=True)
     except (Exception, DatabaseError) as error:
         print(error)
         return JsonResponse({
