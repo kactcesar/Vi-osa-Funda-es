@@ -47,10 +47,10 @@
                     <span class="text-muted font-weight-bold font-size-sm mt-1">Editar Informações Pessoais</span>
                 </div>
                 <div class="card-toolbar">
-                    <button type="reset" onclick="pes_btn_salvar()" value="update" class="btn btn-warning mr-2">Editar dados </button>
-                    <button type="reset" onclick="pes_btn_salvar()"class="btn btn-success mr-2">Salvar alterações</button>
-                    <button type="reset" class="btn btn-secondary">Cancelar</button>
-                    <a >
+                    <button type="button" id="pes_edt" onclick="pes_edt('{{ pes_id }}')" value="update" class="btn btn-warning mr-2">Editar dados </button>
+                    <button type="button" id="pes_btn_salvar" value="add" onclick="pes_add()" class="btn btn-success mr-2">Salvar alterações</button>
+                    <a href="{% url 'vicosafundacoes:index' %}" class="btn btn-secondary">Cancelar</a>
+
                 </div>
             </div>
             <!--end::Header-->
@@ -65,28 +65,6 @@
                         <label class="col-xl-3"></label>
                         <div class="col-lg-9 col-xl-6">
                             <h5 class="font-weight-bold mb-6">Informações do Usuário</h5>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-xl-3 col-lg-3 col-form-label text-right">Foto de Perfil</label>
-                        <div class="col-lg-9 col-xl-6">
-                            <div class="image-input image-input-outline" id="kt_profile_avatar" style="background-image: url('{% static 'assets/media/users/blank.png' %}')">
-
-                                <div class="image-input-wrapper" style="background-image: url('{% static 'assets/media/users/300_21.jpg' %}')"></div>
-
-                                <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" for="pes_path_img" title="Escolher avatar">
-                                    <i class="fa fa-pen icon-sm text-muted"></i>
-                                    <input type="file" id= "pes_path_img" name="pes_path_img" accept=".png, .jpg, .jpeg" />
-                                    <input type="hidden" name="profile_avatar_remove" />
-                                </label>
-                                <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="Cancelar avatar">
-                                    <i class="ki ki-bold-close icon-xs text-muted"></i>
-                                </span>
-                                <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="remove" data-toggle="tooltip" title="Remover avatar">
-                                    <i class="ki ki-bold-close icon-xs text-muted"></i>
-                                </span>
-                            </div>
-                            <span class="form-text text-muted">Tipos de arquivos permitidos: png, jpg, jpeg.</span>
                         </div>
                     </div>
                     <div class="form-group row">

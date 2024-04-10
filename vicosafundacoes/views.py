@@ -115,7 +115,7 @@ def user_dados(request):
     return render(request, 'vicosafundacoes/user_dados.html')
 
 @login_required(login_url="base:my-login")
-def pes_lista():
+def pes_lista(request):
     try:
         dados = PessoaSerializer(Pessoa.objects.all().order_by('pes_nome'), many=True)
     except (Exception, DatabaseError) as error:
@@ -127,7 +127,7 @@ def pes_lista():
     else:
         return JsonResponse({'dados': dados.data})
     
-@login_required(login_url="vicosafundacoes:my-login")
+@login_required(login_url="vicosafundacoes:my-login") 
 def pes_atb(request):
     try:
         item = PessoaSerializer(Pessoa.objects.get(pk=request.GET['id']))
@@ -138,32 +138,46 @@ def pes_atb(request):
             'aviso': 'Problema ao consultar os dados'}, 
             status=500)
     else:
-        return JsonResponse(item.data)
+        return JsonResponse(item.data) 
+
 
 @login_required(login_url="vicosafundacoes:my-login")
 def pes_add(request):
     try:
-        item=Pessoa()
-        item.pes_nome=request.POST['pes_nome']
-        item.pes_email =request.POST['pes_email']
-        item.pes_doc=request.POST['pes_doc']
-        item.pes_ctt=request.POST['pes_ctt']
-        item.pes_path_img=request.POST['pes_path_img']
+        # Verifica se já existe uma Pessoa com os mesmos dados
+        existing_person = Pessoa.objects.filter(
+            pes_nome=request.POST['pes_nome'],
+            pes_email=request.POST['pes_email'],
+            pes_doc=request.POST['pes_doc'],
+            pes_ctt=request.POST['pes_ctt'],
+        ).first()
+        
+        if existing_person:
+            return JsonResponse({
+                'aviso': 'Já existe uma pessoa com esses dados'},
+                status=400)
+
+        # Se não existir, cria um novo registro
+        item = Pessoa()
+        item.pes_nome = request.POST['pes_nome']
+        item.pes_email = request.POST['pes_email']
+        item.pes_doc = request.POST['pes_doc']
+        item.pes_ctt = request.POST['pes_ctt']
         item.pes_nome_adm = request.user
         item.pes_adm_id = request.user.id
         
         item.save()
-    except(Exception,DatabaseError) as error:
+    except (Exception, DatabaseError) as error:
         print(error)
         return JsonResponse({
             'error': str(error),
-            'aviso': 'Erro ao adicionar a produto'},
+            'aviso': 'Erro ao adicionar a pessoa'},
             status=500)
     else:
         return JsonResponse({
-            'item': None,
             'aviso': 'Adicionado com sucesso!'},
             status=200)
+
         
 @login_required(login_url="vicosafundacoes:my-login")
 def pes_edt(request):
@@ -175,7 +189,6 @@ def pes_edt(request):
             item.pes_doc=request.POST['pes_doc']
             item.pes_ctt=request.POST['pes_ctt']
             item.pes_nome_adm=request.POST['pes_nome_adm']
-            item.pes_path_img=request.POST['pes_path_img']
             item.save()
     except(Exception,DatabaseError) as error:
         print(error)

@@ -8,7 +8,6 @@ class Pessoa (models.Model):
     pes_ctt = models.CharField(max_length=20)
     pes_nome_adm = models.CharField(max_length=255)
     pes_adm_id = models.IntegerField()
-    pes_path_img = models.CharField(max_length=255)
     pes_email = models.CharField(max_length=255)
     usu_cad_dta = models.DateField(auto_now_add=True)
     usu_alt_dta = models.DateField(auto_now=True)
