@@ -32,17 +32,33 @@ class CreateUserForm(UserCreationForm):
         super(CreateUserForm, self).__init__(*args, **kwargs)
         
         # Altera o widget do campo username
-        self.fields['username'].widget = forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu nome de usuário'})
+        username_attrs = {
+            'class': 'form-control h-auto form-control-solid py-4 px-8',
+            'placeholder': 'Digite seu nome de usuário'
+        }
+        self.fields['username'].widget = forms.TextInput(attrs=username_attrs)
         
         # Altera o widget do campo email
-        self.fields['email'].widget = forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Digite seu endereço de e-mail'})
+        email_attrs = {
+            'class': 'form-control h-auto form-control-solid py-4 px-8',
+            'placeholder': 'Digite seu endereço de e-mail'
+        }
+        self.fields['email'].widget = forms.EmailInput(attrs=email_attrs)
         
         # Altera o widget do campo password1
-        self.fields['password1'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Digite sua senha'})
-        
-        # Altera o widget do campo password2
-        self.fields['password2'].widget = forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirme sua senha'})
-        
+        password1_attrs = {
+            'class': 'form-control h-auto form-control-solid py-4 px-8',
+            'placeholder': 'Digite sua senha'
+        }
+        self.fields['password1'].widget = forms.PasswordInput(attrs=password1_attrs)
+
+        # Modify widget attributes for password2
+        password2_attrs = {
+            'class': 'form-control h-auto form-control-solid py-4 px-8',
+            'placeholder': 'Confirme sua senha'
+        }
+        self.fields['password2'].widget = forms.PasswordInput(attrs=password2_attrs)
+
         # Tradução dos labels dos campos
         self.fields['username'].label = 'Nome de usuário'
         self.fields['email'].label = 'Endereço de e-mail'
@@ -54,7 +70,6 @@ class CreateUserForm(UserCreationForm):
         self.fields['username'].help_text = "Obrigatório. 150 caracteres ou menos. Apenas letras, dígitos e @/./+/-/_ são permitidos."
         self.fields['password2'].help_text = "Digite a mesma senha que você digitou antes, para verificação."
     
-        #self.fields['submit'] = forms.CharField(widget=forms.TextInput(attrs={'type': 'submit', 'value': 'Registrar'}))
         
     class Meta:
         model = User
