@@ -30,7 +30,7 @@ var tab_cat_imp = function() {
         table.on('processing.dt', function (e, settings, processing) {
             if (processing) {
                 Toast.fire({
-                    icon: 'success',
+                    icon: 'primary',
                     title: 'Sucesso! Carregando os dados ...'
                 });
             } else {
@@ -96,7 +96,7 @@ var tab_cat_imp = function() {
                     type: "text",
                     render: function(data) {
                         if (data === true) {
-                            return '<span class="btn btn-text-success btn-hover-light-success font-weight-bold mr-2">Sim</span>';
+                            return '<span class="btn btn-text-primary btn-hover-light-primary font-weight-bold mr-2">Sim</span>';
                         } else {
                             return '<span class="btn btn-text-danger btn-hover-light-danger font-weight-bold mr-2">Não</span>';
                         }
@@ -107,7 +107,7 @@ var tab_cat_imp = function() {
                     orderable: false,
                     render: function(data, type, row) {
                         return '\
-                            <button type="button" onclick="cat_imp_edt(' + row.cat_imp_id + ')" class="btn btn-light-success btn-icon btn-circle"\
+                            <button type="button" onclick="cat_imp_edt(' + row.cat_imp_id + ')" class="btn btn-light-primary btn-icon btn-circle"\
                                 data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
                                 <i class="flaticon-edit"></i>\
                             </button> \
