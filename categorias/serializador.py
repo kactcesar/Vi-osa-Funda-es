@@ -8,6 +8,12 @@ class CategoriaPessoaSerializer(serializers.ModelSerializer):
         model = CategoriaPessoa
         fields = '__all__'  
         
+
+class CategoriaAvaliacaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CategoriaAvaliacao
+        fields = '__all__'  
+        
         
 class CategoriaImpactoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,4 +39,11 @@ class CategoriaProdutoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CategoriaProduto
+        fields = '__all__'  
+        
+        
+class CategoriaObraSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CategoriaObra
         fields = '__all__'  

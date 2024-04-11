@@ -372,7 +372,6 @@ def cat_tip_del(request):
         }, status=200)
         
 ##################################################################### categoria Porduto ########################################################################### ########## 
-
 @login_required(login_url="vicosafundacoes:my-login")        
 def cat_prod_index(request):
     return render(request, 'categoria produto/cat_prod_index.html')
@@ -463,6 +462,192 @@ def cat_prod_del(request):
             'aviso': 'Excluido com sucesso!'
         }, status=200)
 
+
+
+######################################################################### Categoria Avaliação #################################################################################
+
+@login_required(login_url="vicosafundacoes:my-login")        
+def cat_aval_index(request):
+    return render(request, 'categoria avaliacao/cat_aval_index.html')
+
+@login_required(login_url="vicosafundacoes:my-login")
+def cat_aval_lista(request):
+    try:
+        dados = CategoriaAvaliacaoSerializer(CategoriaAvaliacao.objects.all().order_by('cat_aval_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Problema ao consultar os dados'
+        }, status=500)
+    else:
+        return JsonResponse({'dados': dados.data})
+    
+@login_required(login_url="vicosafundacoes:my-login")   
+def cat_aval_atb(request):
+    try:
+        item = CategoriaAvaliacaoSerializer(CategoriaAvaliacao.objects.get(pk=request.GET['id']))
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(item.data)
+
+@login_required(login_url="vicosafundacoes:my-login")
+def cat_aval_add(request):
+    try:
+        item = CategoriaAvaliacao()
+        item.cat_aval_nome=request.POST['cat_aval_nome']
+        item.cat_aval_cor=request.POST['cat_aval_cor']
+        item.cat_aval_ativo = request.POST.get('cat_aval_ativo') == 'on'
+        item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao adicionar a produto'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Adicionado com sucesso!'},
+            status=200)
+        
+@login_required(login_url="vicosafundacoes:my-login")
+def cat_aval_edt(request):
+    try:
+        item = CategoriaAvaliacao.objects.get(pk=request.POST['cat_aval_id'])
+        if request.method=="POST":
+            item.cat_aval_id=request.POST['cat_aval_id']
+            item.cat_aval_nome=request.POST['cat_aval_nome']
+            item.cat_aval_ativo = request.POST.get('cat_aval_ativo') == 'on'
+            item.cat_aval_cor=request.POST['cat_aval_cor']
+            item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao editar a produto'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Editado com sucesso!'},
+            status=200)
+        
+@login_required(login_url="vicosafundacoes:my-login")   
+def cat_aval_del(request):
+    try:
+        if request.method == "POST":
+            item = CategoriaAvaliacao.objects.get(pk=request.POST['cat_aval_id'])
+            item.delete()
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao deletar a Produto'
+        }, status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Excluido com sucesso!'
+        }, status=200)
+
+
+####################################################################### categoria Obra #################################################################################################
+
+@login_required(login_url="vicosafundacoes:my-login")        
+def cat_obr_index(request):
+    return render(request, 'categoria obra/cat_obr_index.html')
+
+@login_required(login_url="vicosafundacoes:my-login")
+def cat_obr_lista(request):
+    try:
+        dados = CategoriaObraSerializer(CategoriaObra.objects.all().order_by('cat_obr_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Problema ao consultar os dados'
+        }, status=500)
+    else:
+        return JsonResponse({'dados': dados.data})
+    
+@login_required(login_url="vicosafundacoes:my-login")   
+def cat_obr_atb(request):
+    try:
+        item = CategoriaObraSerializer(CategoriaObra.objects.get(pk=request.GET['id']))
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(item.data)
+
+@login_required(login_url="vicosafundacoes:my-login")
+def cat_obr_add(request):
+    try:
+        item = CategoriaObra()
+        item.cat_obr_nome=request.POST['cat_obr_nome']
+        item.cat_obr_cor=request.POST['cat_obr_cor']
+        item.cat_obr_ativo = request.POST.get('cat_obr_ativo') == 'on'
+        item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao adicionar a produto'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Adicionado com sucesso!'},
+            status=200)
+        
+@login_required(login_url="vicosafundacoes:my-login")
+def cat_obr_edt(request):
+    try:
+        item = CategoriaObra.objects.get(pk=request.POST['cat_obr_id'])
+        if request.method=="POST":
+            item.cat_obr_id=request.POST['cat_obr_id']
+            item.cat_obr_nome=request.POST['cat_obr_nome']
+            item.cat_obr_ativo = request.POST.get('cat_obr_ativo') == 'on'
+            item.cat_obr_cor=request.POST['cat_obr_cor']
+            item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao editar a produto'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Editado com sucesso!'},
+            status=200)
+        
+@login_required(login_url="vicosafundacoes:my-login")   
+def cat_obr_del(request):
+    try:
+        if request.method == "POST":
+            item = CategoriaObra.objects.get(pk=request.POST['cat_obr_id'])
+            item.delete()
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao deletar a Produto'
+        }, status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Excluido com sucesso!'
+        }, status=200)
 ####################################################################### pesq controls #############################################################################
 @login_required(login_url="vicosafundacoes:my-login")
 
@@ -481,8 +666,7 @@ def pesq_impacto(request):
     else:
         return JsonResponse(dados.data, safe=False)
     
-
-@login_required(login_url="vicosafundacoes:my-login")
+    
 def pesq_status(request):
     try:
         if 'term' in request.GET:
@@ -497,8 +681,7 @@ def pesq_status(request):
             status=500)
     else:
         return JsonResponse(dados.data, safe=False)
-
-@login_required(login_url="vicosafundacoes:my-login")  
+    
 def pesq_tipo(request):
     try:
         if 'term' in request.GET:
@@ -514,7 +697,7 @@ def pesq_tipo(request):
     else:
         return JsonResponse(dados.data, safe=False)
     
-@login_required(login_url="vicosafundacoes:my-login")
+
 def pesq_produto(request):
     try:
         if 'term' in request.GET:
@@ -530,4 +713,35 @@ def pesq_produto(request):
     else:
         return JsonResponse(dados.data, safe=False)
     
+
+def pesq_cat_aval(request):
+    try:
+        if 'term' in request.GET:
+            dados = CategoriaAvaliacaoSerializer(CategoriaAvaliacao.objects.filter(nome__icontains=request.GET['term']).order_by('cat_aval_nome'), many=True)
+        else:
+            dados = CategoriaAvaliacaoSerializer(CategoriaAvaliacao.objects.all().order_by('cat_aval_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(dados.data, safe=False)
+
+
+def pesq_pessoa(request):
+    try:
+        if 'term' in request.GET:
+            dados = CategoriaPessoaSerializer(CategoriaPessoa.objects.filter(nome__icontains=request.GET['term']).order_by('pes_nome'), many=True)
+        else:
+            dados = CategoriaPessoaSerializer(CategoriaPessoa.objects.all().order_by('pes_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(dados.data, safe=False)
     

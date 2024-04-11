@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'vicosafundacoes.apps.VicosaFundacoesConfig',
     'categorias.apps.CategoriasConfig',
+    'fornecedor.apps.FornecedorConfig',
     
     
 ]

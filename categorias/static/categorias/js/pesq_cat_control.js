@@ -181,3 +181,96 @@ function pesq_produto(field){
     });
 }
 
+function pesq_cat_aval(field){
+    $(field).select2({
+        width: "100%",
+        allowClear: true,
+        placeholder: "Pesquise aqui...",
+        language: {
+            "noResults": function(){
+                return "Nenhum resultado encontrado";
+            }
+        },
+        escapeMarkup: function (markup) {
+            return markup;
+        },
+        ajax: {
+            url: '/categorias/pesq_cat_aval/',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                var query = {
+                    term: params.term,
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.cat_aval_nome,
+                            id: item.cat_aval_id,
+                            value: item.cat_aval_id,
+                            cat_aval_id : item.cat_aval_id,
+                            cat_aval_nome : item.cat_aval_nome,
+                        }
+                    })
+                };
+            },
+            transport: function (params, success, failure) {
+                var $request = $.ajax(params);
+                $request.then(success);
+                $request.fail(failure);
+                return $request;
+            }
+        }
+    });
+}
+
+
+function pesq_pessoa(field){
+    $(field).select2({
+        width: "100%",
+        allowClear: true,
+        placeholder: "Pesquise aqui...",
+        language: {
+            "noResults": function(){
+                return "Nenhum resultado encontrado";
+            }
+        },
+        escapeMarkup: function (markup) {
+            return markup;
+        },
+        ajax: {
+            url: '/categorias/pesq_pessoa/',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                var query = {
+                    term: params.term,
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.pes_nome,
+                            id: item.pes_id,
+                            value: item.pes_id,
+                            pes_id : item.pes_id,
+                            pes_nome : item.pes_nome,
+                            pes_ativo : item.pes_ativo,
+                        }
+                    })
+                };
+            },
+            transport: function (params, success, failure) {
+                var $request = $.ajax(params);
+                $request.then(success);
+                $request.fail(failure);
+                return $request;
+            }
+        }
+    });
+}

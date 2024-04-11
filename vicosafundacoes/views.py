@@ -153,10 +153,7 @@ def pes_add(request):
     try:
         # Verifica se já existe uma Pessoa com os mesmos dados
         existing_person = Pessoa.objects.filter(
-            pes_nome=request.POST['pes_nome'],
-            pes_email=request.POST['pes_email'],
-            pes_doc=request.POST['pes_doc'],
-            pes_ctt=request.POST['pes_ctt'],
+            pes_adm_id = request.user.id
         ).first()
         
         if existing_person:
