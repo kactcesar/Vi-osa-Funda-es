@@ -8,9 +8,9 @@
 {% csrf_token %}
 <div class="card card-custom gutter-b bg-white mt-10">
     <div class="card-body">
-        <button type="button" id="pes_edt" onclick="pes_edt('{{ pes_id }}')" value="update" class="btn btn-warning mr-2">Editar dados </button>
-        <button type="button" id="pes_btn_salvar" value="add" onclick="pes_add()" class="btn btn-success mr-2">Salvar alterações</button>
-        <a href="{% url 'vicosafundacoes:index' %}" class="btn btn-secondary">Cancelar</a>  
+        <button type="button" id="pes_edt" onclick="pes_edt('{{ pes_id }}')" value="update" class="btn btn-outline-warning mr-2">Editar dados </button>
+        <button type="button" id="pes_btn_salvar" value="add" onclick="pes_add()" class="btn btn-outline-primary mr-2">Salvar alterações</button>
+        <a href="{% url 'vicosafundacoes:index' %}" class="btn btn-outline-secondary">Cancelar</a>  
     <div class="flex-row-fluid ml-lg-8">
         <form method="post" id="frm_pes">
             {% csrf_token %}

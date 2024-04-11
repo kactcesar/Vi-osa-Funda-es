@@ -34,6 +34,7 @@
                     <form method="POST" autocomplete="off">
                         {% csrf_token %}
                         {{ registerform.as_p }}
+                        <a href="{% url 'vicosafundacoes:index' %}" class="btn btn-outline-warning">Voltar</a> 
                         <input type="submit" class="btn btn-outline-primary" value="Registrar"/>
                     </form>
                 </div>
