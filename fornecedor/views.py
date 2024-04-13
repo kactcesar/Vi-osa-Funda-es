@@ -244,7 +244,7 @@ def aval_add(request):
         forn.forn_aval_dta = datetime.strptime(request.POST['forn_aval_dta'], '%Y-%m-%d')
         
         # Definindo as chaves estrangeiras diretamente
-        forn.cat_aval_id = request.POST['cat_aval']
+        forn.forn_id = request.POST['forn']
         forn.pes_id = request.POST['pes']
         forn.forn_id = request.POST['forn_id']
         
@@ -268,7 +268,7 @@ def aval_edt(request):
     try:
         forn=FornecedorAvaliacao.objects.get(pk=request.POST['forn_aval_id'])
         if request.method=="POST":
-            forn.cat_aval_id = request.POST['cat_aval']
+            forn.forn_id = request.POST['forn']
             forn.forn_aval_dta = datetime.strptime(request.POST['forn_aval_dta'], '%Y-%m-%d')
             forn.pes_id = request.POST['pes']
             forn.forn_id = request.POST['forn_id']
@@ -303,4 +303,19 @@ def aval_del(request):
             'item': None,
             'aviso': 'Excluido com sucesso!'},
             status=200) 
-        
+    
+########################################################################### pesq Fornecedor #################################################################################################
+def pesq_forn(request):
+    try:
+        if 'term' in request.GET:
+            dados = FornecedorSerializer(Fornecedor.objects.filter(nome__icontains=request.GET['term']).order_by('forn_nome'), many=True)
+        else:
+            dados = FornecedorSerializer(Fornecedor.objects.all().order_by('forn_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(dados.data, safe=False)

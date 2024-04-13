@@ -26,4 +26,6 @@ urlpatterns = [
     path('aval_edt/', aval_edt, name='aval_edt'),
     path('aval_del/', aval_del, name='aval_del'),
 
+                    #Url Select2
+    path('pesq_forn/',pesq_forn, name='pesq_forn'),
 ]

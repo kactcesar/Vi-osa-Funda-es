@@ -189,15 +189,50 @@ var tabela_ped = function() {
             columns: [
                 {data: 'ped_id'},
                 {data: 'ped_dta'},
-                {data: 'cat_pes_nome'},
+                {data: 'pes_nome'},
                 {data: 'forn_nome'},
+                {data: 'forn_cnpj'},
+                {data: 'forn_ies'},
                 {data: 'ped_num'},
                 {data: 'ped_qtd'},
                 {data: 'ped_desc'},
+                {data: 'ped_arq_path'},
                 {data: null, responsivePriority: -1},
             ],
             columnDefs: [
-                
+                {
+                    targets: [1],
+                    render: function(data, type, row) {
+                        if (data === null) {
+                            return ''; // Retorna vazio se o valor for nulo
+                        } else {
+                            return moment(data).format("DD/MM/YYYY");
+                        }
+                    }
+                },
+                {
+                    targets: [9],
+                    className: 'text-center',
+                    orderable: false,
+                    render: function(data, type, row) {
+                        if (row.ped_arq_path && row.ped_arq_path.match(/.(jpg|jpeg|png|jpg2|bmp|svg)$/i)) {
+                            return '\
+                                <img onclick="visualizar(' + row.ped_id + ')"\
+                                    id="ped_arq_path_' + row.ped_id +'"\
+                                    src="' + row.ped_arq_path + '"\
+                                    class="img-thumbnail"\
+                                    width="200" height="200"\
+                                >\
+                            ';
+                        } else if (row.ped_arq_path) {
+                            return '\
+                                <a href="' + row.ped_arq_path + '" target="_blank">' + row.ped_arq_path + '</a>\
+                            ';
+                        } else {
+                            return ''; // Retorna vazio se row.ped_arq_path for undefined
+                        }
+                    },
+                },
                 {
                     targets: [-1],
                     orderable: false,
@@ -226,12 +261,63 @@ var tabela_ped = function() {
     };
 }();
 
+var KTDropzonePedidoArquivo = function() {
+
+    var dropzone_arquivos = function () {
+        // single file upload
+        $('#ped_arq_images').dropzone({
+            autoProcessQueue: false,
+            url: '/obras/ped_add/',
+            method: 'POST',
+            parallelUploads: 10,
+            uploadMultiple: true,
+            maxFiles: 10,
+            maxFilesize: 10, // MB
+            addRemoveLinks: true,
+            init: function() {
+                this.on("sendingmultiple", function(files, xhr, formData){
+                    for (var i = 0; i < files.length; i++) {
+                        formData.append("arquivos", files[i]); // Corrigido para "arquivos"
+                    }
+    
+                    if (!formData.has('csrfmiddlewaretoken')) {
+                        formData.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+                    }
+                });
+                
+                this.on("success", function(files, response) {
+                    // A resposta já é um objeto JSON, não é necessário fazer parse
+                    // Atualiza o src da imagem com o caminho do arquivo, se houver
+                    if (response.item) {
+                        $("#ped_arq_path").attr("src", response.item.ped_arq_path);
+                    }
+                    Swal.fire("Deu tudo certo!", response.aviso, "success");
+                    this.removeAllFiles(); // Remove todos os arquivos após o upload
+                    $('#frm_ped_modal').modal('hide');
+                });
+                
+                this.on("error", function (files, errorMessage) {
+                    Swal.fire("Ops! Algo deu errado!", errorMessage.responseText, "error");
+                });
+            },
+        });
+    };
+    return {
+        init: function() {
+            dropzone_arquivos();
+        },
+    };
+}();
+
+
 
 jQuery(document).ready(function() {
     tab_obr.init()
-    
+    KTDropzonePedidoArquivo.init();
+
     pesq_cat_obr('#cat_obr')
-    pesq_cat_pes('#cat_pes')
+    pesq_pessoa('#cat_pes')
+    pesq_forn('#forn')
 
     
 });
@@ -261,8 +347,10 @@ function obr_add(){
     var url
     if($('#obr_btn_salvar').val() == 'update'){
         url = '/obras/obr_edt/'
+        KTDropzonePedidoArquivo.save(); 
     }else{
         url = '/obras/obr_add/'
+        
     }
 
     var frm_obr = new FormData(document.getElementById('frm_obr'));
@@ -321,6 +409,7 @@ function obr_edt(obr_id){
         $('#aba2').show();
         $('[href="#kt_tab_pane_1"]').tab('show');
         $('#frm_obr_modal').modal('show');
+        tabela_ped.init()
     })
     .fail(function (jqxhr, settings, ex) {
         exibeDialogo(result.responseText, tipoAviso.ERRO);
@@ -376,3 +465,179 @@ function obr_del(obr_id) {
         }
     });
 };
+
+
+function ped_add() {
+    var url;
+
+    if ($('#ped_btn_salvar').val() == 'update') {
+        url = '/obras/ped_edt/';
+    } else {
+        url = '/obras/ped_add/';
+    }
+
+    var frm_ped = new FormData(document.getElementById('frm_ped'));
+    frm_ped.append('obr_id', $('#obr_id').val());
+
+    // Obter arquivos do Dropzone.js
+    var dropzoneFiles = $('#ped_arq_images').get(0).dropzone.files;
+    for (var i = 0; i < dropzoneFiles.length; i++) {
+        frm_ped.append('arquivos', dropzoneFiles[i]);
+    }
+
+    $.ajax({
+        method: 'POST',
+        url: url,
+        data: frm_ped,
+        contentType: false,
+        cache: false,
+        processData: false,
+        beforeSend: function() {
+            Swal.fire({
+                title: "Carregando os dados",
+                text: "Aguarde ...",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                didOpen: function() {            
+                    Swal.showLoading();
+                }
+            })
+        },
+    })
+    .done(function(data, textStatus, jqXHR) {
+        if (jqXHR.status === 200 && jqXHR.readyState === 4) {
+            $('#kt_ped').DataTable().ajax.reload();
+            $('#frm_ped_modal').modal('hide');
+            Swal.close();
+        }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        Swal.close();
+        console.log(jqXHR);
+        Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+    });
+}
+
+
+function ped_edt(ped_id){
+    $.getJSON('/obras/ped_atb/',
+        {
+            id: ped_id
+        }
+    ).done(function (item) {
+        $('#ped_id').val(item.ped_id);
+        $('#ped_num').val(item.ped_num);
+        $('#ped_qtd').val(item.ped_qtd);
+        $('#ped_desc').val(item.ped_desc);
+        $('#ped_dta').val(moment(item.ped_dta).format("YYYY-MM-DD"));
+        
+        $('#cat_pes').empty();
+        var cat_pes = new Option(item.pes_nome,item.pes_id,true,true);
+        $('#cat_pes').append(cat_pes).trigger('change');
+
+        $('#forn').empty();
+        var forn = new Option(item.forn_nome,item.forn_id,true,true);
+        $('#forn').append(forn).trigger('change');
+
+        if (item.ped_arq_path.match(/.(jpg|jpeg|png|jpg2|bmp|svg)$/i)){
+            $('.pedido-arquivo-edicao-imgs').show();
+            $('.pedido-arquivo-edicao-docs').hide();
+            $('#ped_arq_path').attr('src', item.ped_arq_path);
+        }
+        else{
+            if (item.ped_arq_path.match(/.(txt|doc|docx|ppt)$/i))
+            {
+                $('#arquivos_outros_tipos').removeClass("text-danger");
+                $('#arquivos_outros_tipos').removeClass("text-success");
+                $('#arquivos_outros_tipos').removeClass("fa-file-pdf");
+                $('#arquivos_outros_tipos').removeClass("fa-file-excel");
+                $('#arquivos_outros_tipos').addClass("fa-file-word");
+                $('#arquivos_outros_tipos').addClass("text-info");
+            }
+            else if(item.ped_arq_path.match(/.(xls|xlsx)$/i))
+            {
+                $('#arquivos_outros_tipos').removeClass("fa-file-pdf");
+                $('#arquivos_outros_tipos').removeClass("fa-file-word");
+                $('#arquivos_outros_tipos').removeClass("text-danger");
+                $('#arquivos_outros_tipos').removeClass("text-info");                
+                $('#arquivos_outros_tipos').addClass("fa-file-excel");
+                $('#arquivos_outros_tipos').addClass("text-success");
+            }
+            else
+            {
+                $('#arquivos_outros_tipos').removeClass("fa-file-excel");
+                $('#arquivos_outros_tipos').removeClass("fa-file-word");
+                $('#arquivos_outros_tipos').removeClass("text-success");
+                $('#arquivos_outros_tipos').removeClass("text-info");
+                $('#arquivos_outros_tipos').addClass("fa-file-pdf");
+                $('#arquivos_outros_tipos').addClass("text-danger");
+            }
+            
+            $('.pedido-arquivo-edicao-imgs').hide();
+            $('.pedido-arquivo-edicao-docs').show();
+        }
+
+        $('#ped_btn_salvar').val('update');
+        $('#frm_ped_modal').modal('show');
+    })
+    .fail(function (jqxhr, settings, ex) {
+        exibeDialogo(result.responseText, tipoAviso.ERRO);
+    });
+}
+
+function ped_del(ped_id) {
+    Swal.fire({
+        title: "Deseja executar esta operação?",
+        text: "O registro " + ped_id + " será removido permanentemente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ok, desejo remover!",
+        cancelButtonText: "Não, cancelar!",
+        reverseButtons: true
+    }).then(function(result) {
+        if (result.value) {
+            var dados = new FormData();
+                dados.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+                dados.append("ped_id", ped_id);
+
+            $.ajax({
+                method: 'POST',
+                url: '/obras/ped_del/',
+                data:  dados,
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend: function() {
+                    Swal.fire({
+                        title: "Operação em andamento",
+                        text: "Aguarde ...",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        didOpen: function() {            
+                            Swal.showLoading();
+                        }
+                    })
+                },
+            })
+            .done(function(data,  textStatus, jqXHR){
+                console.log(jqXHR);
+                if (jqXHR.status === 200 && jqXHR.readyState === 4){
+                    $('#kt_ped').DataTable().ajax.reload();
+                    $('#frm_ped_modal').modal('hide');
+                    Swal.close();
+                }
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                Swal.close();
+                Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+            });
+        }
+    });
+};
+
+function visualizar(ped_id) {
+    const image = new Viewer(document.getElementById('ped_arq_path_' + ped_id));
+     image.show();
+}

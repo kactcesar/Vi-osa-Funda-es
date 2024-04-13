@@ -22,9 +22,8 @@ class PedidoSerializer(serializers.ModelSerializer):
     forn_cnpj = serializers.CharField(source="forn.forn_cnpj", read_only="True")
     forn_ies = serializers.CharField(source="forn.forn_ies", read_only="True")
 
-    cat_pes_id = serializers.IntegerField(source="cat_pes.cat_pes_id", read_only="True")
-    cat_pes_nome = serializers.CharField(source="cat_pes.cat_pes_nome", read_only="True")
-    cat_pes_cor = serializers.CharField(source="cat_pes.cat_pes_cor", read_only="True")
+    pes_id = serializers.IntegerField(source="cat_pes.pes_id", read_only="True")
+    pes_nome = serializers.CharField(source="cat_pes.pes_nome", read_only="True")
 
     class Meta:
         model = Pedido

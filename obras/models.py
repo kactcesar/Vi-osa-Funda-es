@@ -27,8 +27,8 @@ class Pedido(models.Model):
     ped_num = models.IntegerField()
     ped_qtd = models.DecimalField(max_digits=10, decimal_places=2)  #
     ped_desc = models.CharField(max_length=255)
+    ped_arq_path = models.CharField(max_length=255)
     ped_dta = models.DateField()
-    obr_dta_fin = models.DateField()
     cat_pes = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE)
     forn = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
     obr = models.ForeignKey(Obra, on_delete=models.CASCADE)

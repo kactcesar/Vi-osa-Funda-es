@@ -6,6 +6,9 @@ from django.db import DatabaseError
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from django.http import JsonResponse
+from django.core.files.storage import FileSystemStorage
+import os
 
 # Create your views here.
 @login_required(login_url="vicosafundacoes:my-login")        
@@ -107,7 +110,7 @@ def obr_del(request):
 @login_required(login_url="vicosafundacoes:my-login")
 def ped_lista(request):
     try:
-        dados= PedidoSerializer(Pedido.objects.filter(forn=request.POST['ped_id']).order_by('ped_num'), many=True)
+        dados= PedidoSerializer(Pedido.objects.filter(obr=request.POST['obr_id']).order_by('ped_num'), many=True)
     except(Exception,DatabaseError) as error:
         print(error)
         return JsonResponse({
@@ -133,27 +136,44 @@ def ped_atb(request):
 @login_required(login_url="vicosafundacoes:my-login")
 def ped_add(request):
     try:
-        item = Obra()
+        # Caminho para salvar os arquivos do pedido
+        xpath = 'media/Pedido/' + 'arquivo_ped' + '/'
+        # Cria o diretório se não existir
+        if not os.path.exists(xpath):
+            os.makedirs(xpath)
+        
+        # Armazena os arquivos no sistema de arquivos, se estiverem presentes no request
+        arquivos = request.FILES.getlist('arquivos')  # Corrigido para 'arquivos'
+        filepaths = []
+        for arquivo in arquivos:
+            xstorage = FileSystemStorage(location=xpath)
+            filename = xstorage.save(arquivo.name, arquivo)
+            filepath = os.path.join(xpath, filename)
+            filepaths.append(filepath)
+        
+        # Cria um novo Pedido
+        item = Pedido()
         item.ped_num = request.POST['ped_num']
         item.ped_qtd = request.POST['ped_qtd']
         item.ped_desc = request.POST['ped_desc']
+        if filepaths:  # Se houver arquivos, use o primeiro caminho como caminho do arquivo
+            item.ped_arq_path = filepaths[0]
         item.ped_dta = datetime.strptime(request.POST['ped_dta'], '%Y-%m-%d')
-        item.obr = Obra(obr_id=request.POST['obr_id'])
-        item.cat_pes = CategoriaPessoa.objects.get(cat_pes_id=request.POST['cat_pes'])
+        item.obr = Obra.objects.get(obr_id=request.POST['obr_id'])
+        item.cat_pes = CategoriaPessoa.objects.get(pes_id=request.POST['cat_pes'])
         item.forn = Fornecedor.objects.get(forn_id=request.POST['forn'])
         item.save()
-    except(Exception, DatabaseError) as error:
-        print(error)
-        return JsonResponse({
-            'error': str(error),
-            'aviso': 'Erro ao adicionar a Pedido'},
-            status=500)
-    else:
+        
         return JsonResponse({
             'item': None,
             'aviso': 'Adicionado com sucesso!'},
             status=200)
-
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao adicionar o Pedido'},
+            status=500)
         
 @login_required(login_url="vicosafundacoes:my-login")
 def ped_edt(request):
