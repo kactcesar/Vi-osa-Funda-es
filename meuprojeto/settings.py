@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'vicosafundacoes.apps.VicosaFundacoesConfig',
     'categorias.apps.CategoriasConfig',
     'fornecedor.apps.FornecedorConfig',
+    'obras.apps.ObrasConfig',
     
     
 ]

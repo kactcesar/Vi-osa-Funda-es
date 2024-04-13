@@ -728,6 +728,23 @@ def pesq_cat_aval(request):
             status=500)
     else:
         return JsonResponse(dados.data, safe=False)
+    
+    
+def pesq_cat_obr(request):
+    try:
+        if 'term' in request.GET:
+            dados = CategoriaObraSerializer(CategoriaObra.objects.filter(nome__icontains=request.GET['term']).order_by('cat_obr_nome'), many=True)
+        else:
+            dados = CategoriaObraSerializer(CategoriaObra.objects.all().order_by('cat_obr_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(dados.data, safe=False)
+
 
 
 def pesq_pessoa(request):

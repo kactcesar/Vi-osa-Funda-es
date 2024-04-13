@@ -98,8 +98,8 @@ class CategoriaObra(models.Model):
     cat_obr_ativo = models.BooleanField(default=True)
     usu_cad_dta = models.DateField(auto_now_add=True)
     usu_alt_dta = models.DateField(auto_now=True)
-    usu_cad = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_cad_obr')
-    usu_alt = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_alt_obr')
+    usu_cad = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_cad_cat_obr')
+    usu_alt = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_alt_cat_obr')
     
     
     class Meta:
