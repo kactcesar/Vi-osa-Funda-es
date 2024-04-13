@@ -2,13 +2,14 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .models import *
 from obras.serializador import *
-from django.db import DatabaseError
+from django.db import DatabaseError,transaction
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 import os
+from django.conf import settings
 
 # Create your views here.
 @login_required(login_url="vicosafundacoes:my-login")        
@@ -137,7 +138,7 @@ def ped_atb(request):
 def ped_add(request):
     try:
         # Caminho para salvar os arquivos do pedido
-        xpath = 'media/Pedido/' + 'arquivo_ped' + '/'
+        xpath = '/media/Pedido/' + 'arquivo_ped' + '/'
         # Cria o diretório se não existir
         if not os.path.exists(xpath):
             os.makedirs(xpath)
@@ -204,16 +205,29 @@ def ped_edt(request):
 def ped_del(request):
     try:
         if request.method == "POST":
-            item = Pedido.objects.get(pk=request.POST['ped_id'])
-            item.delete()
-    except (Exception, DatabaseError) as error:
-        print(error)
+            ped_id = request.POST.get('ped_id')
+            item = Pedido.objects.get(pk=ped_id)
+            xitem = {
+                'ped_arq_path': item.ped_arq_path,
+            }
+            with transaction.atomic():
+                item.delete()
+                # Removendo arquivo do disco rígido
+                file_path = os.path.join(settings.BASE_DIR, xitem['ped_arq_path'])
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+    except Pedido.DoesNotExist:
+        return JsonResponse({
+            'error': 'Pedido não encontrado.',
+            'aviso': 'Erro ao deletar o Pedido'
+        }, status=404)
+    except DatabaseError as error:
         return JsonResponse({
             'error': str(error),
-            'aviso': 'Erro ao deletar a Pedido'
+            'aviso': 'Erro ao deletar o Pedido'
         }, status=500)
     else:
         return JsonResponse({
             'item': None,
-            'aviso': 'Excluido com sucesso!'
+            'aviso': 'Excluído com sucesso!'
         }, status=200)
