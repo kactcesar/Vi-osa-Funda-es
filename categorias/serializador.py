@@ -47,3 +47,9 @@ class CategoriaObraSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoriaObra
         fields = '__all__'  
+
+class CategoriaUnidadeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CategoriaUnidade
+        fields = '__all__'  

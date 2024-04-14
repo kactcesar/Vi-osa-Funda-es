@@ -648,6 +648,99 @@ def cat_obr_del(request):
             'item': None,
             'aviso': 'Excluido com sucesso!'
         }, status=200)
+        
+        
+#########################################################################categoria unidade d emedida##############################################################
+
+@login_required(login_url="vicosafundacoes:my-login")        
+def cat_uni_index(request):
+    return render(request, 'categoria unidade/cat_uni_index.html')
+
+@login_required(login_url="vicosafundacoes:my-login")
+def cat_uni_lista(request):
+    try:
+        dados = CategoriaUnidadeSerializer(CategoriaUnidade.objects.all().order_by('cat_uni_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Problema ao consultar os dados'
+        }, status=500)
+    else:
+        return JsonResponse({'dados': dados.data})
+    
+@login_required(login_url="vicosafundacoes:my-login")   
+def cat_uni_atb(request):
+    try:
+        item = CategoriaUnidadeSerializer(CategoriaUnidade.objects.get(pk=request.GET['id']))
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(item.data)
+
+@login_required(login_url="vicosafundacoes:my-login")
+def cat_uni_add(request):
+    try:
+        item = CategoriaUnidade()
+        item.cat_uni_nome=request.POST['cat_uni_nome']
+        item.cat_uni_cor=request.POST['cat_uni_cor']
+        item.cat_uni_ativo = request.POST.get('cat_uni_ativo') == 'on'
+        item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao adicionar unidade'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Adicionado com sucesso!'},
+            status=200)
+        
+@login_required(login_url="vicosafundacoes:my-login")
+def cat_uni_edt(request):
+    try:
+        item = CategoriaUnidade.objects.get(pk=request.POST['cat_uni_id'])
+        if request.method=="POST":
+            item.cat_uni_id=request.POST['cat_uni_id']
+            item.cat_uni_nome=request.POST['cat_uni_nome']
+            item.cat_uni_ativo = request.POST.get('cat_uni_ativo') == 'on'
+            item.cat_uni_cor=request.POST['cat_uni_cor']
+            item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao editar a produto'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Editado com sucesso!'},
+            status=200)
+        
+@login_required(login_url="vicosafundacoes:my-login")   
+def cat_uni_del(request):
+    try:
+        if request.method == "POST":
+            item = CategoriaUnidade.objects.get(pk=request.POST['cat_uni_id'])
+            item.delete()
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao deletar a Produto'
+        }, status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Excluido com sucesso!'
+        }, status=200)        
 ####################################################################### pesq controls #############################################################################
 @login_required(login_url="vicosafundacoes:my-login")
 
@@ -753,6 +846,22 @@ def pesq_pessoa(request):
             dados = CategoriaPessoaSerializer(CategoriaPessoa.objects.filter(nome__icontains=request.GET['term']).order_by('pes_nome'), many=True)
         else:
             dados = CategoriaPessoaSerializer(CategoriaPessoa.objects.all().order_by('pes_nome'), many=True)
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(dados.data, safe=False)
+    
+    
+def pesq_unidade(request):
+    try:
+        if 'term' in request.GET:
+            dados = CategoriaUnidadeSerializer(CategoriaUnidade.objects.filter(nome__icontains=request.GET['term']).order_by('cat_uni_nome'), many=True)
+        else:
+            dados = CategoriaUnidadeSerializer(CategoriaUnidade.objects.all().order_by('cat_uni_nome'), many=True)
     except (Exception, DatabaseError) as error:
         print(error)
         return JsonResponse({

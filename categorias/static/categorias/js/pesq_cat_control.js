@@ -325,3 +325,50 @@ function pesq_cat_obr(field){
         }
     });
 }
+
+
+function pesq_unidade(field){
+    $(field).select2({
+        width: "100%",
+        allowClear: true,
+        placeholder: "Pesquise aqui...",
+        language: {
+            "noResults": function(){
+                return "Nenhum resultado encontrado";
+            }
+        },
+        escapeMarkup: function (markup) {
+            return markup;
+        },
+        ajax: {
+            url: '/categorias/pesq_unidade/',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                var query = {
+                    term: params.term,
+                }
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.cat_uni_nome,
+                            id: item.cat_uni_id,
+                            value: item.cat_uni_id,
+                            cat_uni_id : item.cat_uni_id,
+                            cat_uni_nome : item.cat_uni_nome,
+                        }
+                    })
+                };
+            },
+            transport: function (params, success, failure) {
+                var $request = $.ajax(params);
+                $request.then(success);
+                $request.fail(failure);
+                return $request;
+            }
+        }
+    });
+}

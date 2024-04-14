@@ -195,6 +195,7 @@ var tabela_ped = function() {
                 {data: 'forn_ies'},
                 {data: 'ped_num'},
                 {data: 'ped_qtd'},
+                {data: 'cat_uni_nome'},
                 {data: 'ped_desc'},
                 {data: 'ped_arq_path'},
                 {data: null, responsivePriority: -1},
@@ -211,7 +212,7 @@ var tabela_ped = function() {
                     }
                 },
                 {
-                    targets: [9],
+                    targets: [10],
                     className: 'text-center',
                     orderable: false,
                     render: function(data, type, row) {
@@ -317,6 +318,7 @@ jQuery(document).ready(function() {
 
     pesq_cat_obr('#cat_obr')
     pesq_pessoa('#cat_pes')
+    pesq_unidade('#cat_uni')
     pesq_forn('#forn')
 
     
@@ -339,6 +341,7 @@ function abrir_modal_ped(){
     $('#ped_desc').val('');
     $('#ped_desc').val('');
     $('#forn').val('').trigger('change'); 
+    $('#cat_uni').val('').trigger('change'); 
     $('#cat_pes').val('').trigger('change');
     $('#frm_ped_modal').modal('show');
 }
@@ -405,6 +408,10 @@ function obr_edt(obr_id){
         var cat_obr = new Option(item.cat_obr_nome,item.cat_obr_id,true,true);
         $('#cat_obr').append(cat_obr).trigger('change');
         
+        $('#cat_uni').empty();
+        var cat_uni = new Option(item.cat_uni_nome,item.cat_uni_id,true,true);
+        $('#cat_uni').append(cat_uni).trigger('change');
+
         $('#obr_btn_salvar').val('update');
         $('#aba2').show();
         $('[href="#kt_tab_pane_1"]').tab('show');

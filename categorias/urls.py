@@ -56,6 +56,14 @@ urlpatterns = [
     path('cat_obr_edt/', cat_obr_edt, name='cat_obr_edt'),
     path('cat_obr_del/', cat_obr_del, name='cat_obr_del'),
     
+    path('cat_uni_index', cat_uni_index, name='cat_uni_index'),
+    path('cat_uni_lista/', cat_uni_lista, name='cat_uni_lista'),
+    path('cat_uni_atb/', cat_uni_atb, name='cat_uni_atb'),
+    path('cat_uni_add/', cat_uni_add, name='cat_uni_add'),
+    path('cat_uni_edt/', cat_uni_edt, name='cat_uni_edt'),
+    path('cat_uni_del/', cat_uni_del, name='cat_uni_del'),
+    
+    
                         #Url Select2
     path('pesq_impacto/',pesq_impacto, name='pesq_impacto'),
     path('pesq_status/',pesq_status, name='pesq_status'),
@@ -63,7 +71,8 @@ urlpatterns = [
     path('pesq_tipo/',pesq_tipo, name='pesq_tipo'),
     path('pesq_cat_aval/',pesq_cat_aval, name='pesq_cat_aval'),
     path('pesq_cat_obr/',pesq_cat_obr, name='pesq_cat_obr'),
-    path('pesq_pessoa/',pesq_pessoa, name='pesq_pessoa')
+    path('pesq_pessoa/',pesq_pessoa, name='pesq_pessoa'),
+    path('pesq_unidade/',pesq_unidade, name='pesq_unidade')
 
 
 ]

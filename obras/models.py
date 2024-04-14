@@ -24,12 +24,14 @@ class Obra(models.Model):
         
 class Pedido(models.Model):
     ped_id = models.BigAutoField(primary_key=True)
-    ped_num = models.IntegerField()
+    ped_num = models.CharField(70000)
+    ult_num = models.CharField(70000)
     ped_qtd = models.DecimalField(max_digits=10, decimal_places=2)  #
     ped_desc = models.CharField(max_length=255)
     ped_arq_path = models.CharField(max_length=255)
     ped_dta = models.DateField()
     cat_pes = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE)
+    cat_uni = models.ForeignKey(CategoriaUnidade, on_delete=models.CASCADE)
     forn = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
     obr = models.ForeignKey(Obra, on_delete=models.CASCADE)
     usu_cad = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_cad_ped')

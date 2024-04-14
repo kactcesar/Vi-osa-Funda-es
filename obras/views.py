@@ -137,44 +137,66 @@ def ped_atb(request):
 @login_required(login_url="vicosafundacoes:my-login")
 def ped_add(request):
     try:
-        # Caminho para salvar os arquivos do pedido
-        xpath = '/media/Pedido/' + 'arquivo_ped' + '/'
-        # Cria o diretório se não existir
-        if not os.path.exists(xpath):
-            os.makedirs(xpath)
-        
-        # Armazena os arquivos no sistema de arquivos, se estiverem presentes no request
-        arquivos = request.FILES.getlist('arquivos')  # Corrigido para 'arquivos'
-        filepaths = []
-        for arquivo in arquivos:
-            xstorage = FileSystemStorage(location=xpath)
-            filename = xstorage.save(arquivo.name, arquivo)
-            filepath = os.path.join(xpath, filename)
-            filepaths.append(filepath)
-        
-        # Cria um novo Pedido
-        item = Pedido()
-        item.ped_num = request.POST['ped_num']
-        item.ped_qtd = request.POST['ped_qtd']
-        item.ped_desc = request.POST['ped_desc']
-        if filepaths:  # Se houver arquivos, use o primeiro caminho como caminho do arquivo
-            item.ped_arq_path = filepaths[0]
-        item.ped_dta = datetime.strptime(request.POST['ped_dta'], '%Y-%m-%d')
-        item.obr = Obra.objects.get(obr_id=request.POST['obr_id'])
-        item.cat_pes = CategoriaPessoa.objects.get(pes_id=request.POST['cat_pes'])
-        item.forn = Fornecedor.objects.get(forn_id=request.POST['forn'])
-        item.save()
-        
+        with transaction.atomic():
+            # Obtém o ano atual
+            current_year = datetime.now().year
+            
+            # Obtém o último número utilizado
+            ultimo_pedido = Pedido.objects.order_by('-ped_num').first()
+            ultimo_numero = ultimo_pedido.ped_num if ultimo_pedido else 0
+            
+            if isinstance(ultimo_numero, str):
+                ultimo_numero = int(ultimo_numero)
+            
+            # Incrementa o número
+            novo_numero = (current_year * 1000) + (ultimo_numero % 1000) + 1
+            
+            # Cria um novo Pedido
+            item = Pedido()
+            item.ped_num = novo_numero
+            item.ult_num = item.ped_num
+            item.ped_qtd = request.POST['ped_qtd']
+            item.ped_desc = request.POST['ped_desc']
+            item.ped_dta = datetime.strptime(request.POST['ped_dta'], '%Y-%m-%d')
+            item.obr = Obra.objects.get(obr_id=request.POST['obr_id'])
+            item.cat_pes = CategoriaPessoa.objects.get(pes_id=request.POST['cat_pes'])
+            item.cat_uni = CategoriaUnidade.objects.get(cat_uni_id=request.POST['cat_uni'])
+            item.forn = Fornecedor.objects.get(forn_id=request.POST['forn'])
+            
+            item.save()
+
+            # Agora que o Pedido foi salvo, podemos acessar o ped_id
+            ped_id = item.ped_id
+
+            # Caminho para salvar os arquivos do pedido
+            xpath = os.path.join('media/pedido/', str(ped_id))
+            # Cria o diretório se não existir
+            os.makedirs(xpath, exist_ok=True)
+
+            # Armazena os arquivos no sistema de arquivos, se estiverem presentes no request
+            arquivos = request.FILES.getlist('arquivos')
+            filepaths = []
+            for arquivo in arquivos:
+                xstorage = FileSystemStorage(location=xpath)
+                filename = xstorage.save(arquivo.name, arquivo)
+                filepath = os.path.join(xpath, filename)
+                filepaths.append(filepath)
+
+            # Atualiza o caminho do arquivo do Pedido com o primeiro caminho, se houver arquivos
+            if filepaths:
+                item.ped_arq_path = filepaths[0]
+                item.save()
+
         return JsonResponse({
             'item': None,
-            'aviso': 'Adicionado com sucesso!'},
-            status=200)
+            'aviso': 'Adicionado com sucesso!'
+        }, status=200)
     except (Exception, DatabaseError) as error:
         print(error)
         return JsonResponse({
             'error': str(error),
-            'aviso': 'Erro ao adicionar o Pedido'},
-            status=500)
+            'aviso': 'Erro ao adicionar o Pedido'
+        }, status=500)
         
 @login_required(login_url="vicosafundacoes:my-login")
 def ped_edt(request):
@@ -187,6 +209,7 @@ def ped_edt(request):
             item.ped_dta = datetime.strptime(request.POST['ped_dta'], '%Y-%m-%d')
             item.obr = Obra(obr_id=request.POST['obr_id'])
             item.cat_pes = CategoriaPessoa.objects.get(cat_pes_id=request.POST['cat_pes'])
+            item.cat_pes = CategoriaUnidade.objects.get(cat_uni_id=request.POST['cat_uni'])
             item.forn = Fornecedor.objects.get(forn_id=request.POST['forn'])
             item.save()
     except(Exception,DatabaseError) as error:

@@ -25,6 +25,10 @@ class PedidoSerializer(serializers.ModelSerializer):
     pes_id = serializers.IntegerField(source="cat_pes.pes_id", read_only="True")
     pes_nome = serializers.CharField(source="cat_pes.pes_nome", read_only="True")
 
+    cat_uni_id = serializers.IntegerField(source="cat_uni.cat_uni_id", read_only="True")
+    cat_uni_nome = serializers.CharField(source="cat_uni.cat_uni_nome", read_only="True")
+    cat_uni_cor = serializers.CharField(source="cat_uni.cat_uni_cor", read_only="True")
+    
     class Meta:
         model = Pedido
         fields = '__all__'  
