@@ -216,21 +216,21 @@ var tabela_ped = function() {
                     className: 'text-center',
                     orderable: false,
                     render: function(data, type, row) {
-                        if (row.ped_arq_path && row.ped_arq_path.match(/.(jpg|jpeg|png|jpg2|bmp|svg)$/i)) {
+                        if (row.ped_arq_path.match(/.(jpg|jpeg|png|jpg2|bmp|svg)$/i)){
                             return '\
-                                <img onclick="visualizar(' + row.ped_id + ')"\
-                                    id="ped_arq_path_' + row.ped_id +'"\
+                                <img onclick="visualizar(' + row.ped_arq_id + ')"\
+                                    id="ped_arq_path_' + row.ped_arq_id +'"\
                                     src="' + row.ped_arq_path + '"\
                                     class="img-thumbnail"\
                                     width="200" height="200"\
+                                    "\
                                 >\
                             ';
-                        } else if (row.ped_arq_path) {
+                        }
+                        else{
                             return '\
                                 <a href="' + row.ped_arq_path + '" target="_blank">' + row.ped_arq_path + '</a>\
                             ';
-                        } else {
-                            return ''; // Retorna vazio se row.ped_arq_path for undefined
                         }
                     },
                 },

@@ -184,7 +184,7 @@ def ped_add(request):
 
             # Atualiza o caminho do arquivo do Pedido com o primeiro caminho, se houver arquivos
             if filepaths:
-                item.ped_arq_path = filepaths[0]
+                item.ped_arq_path ='/'+ filepaths[0]
                 item.save()
 
         return JsonResponse({
