@@ -228,29 +228,26 @@ def ped_edt(request):
 def ped_del(request):
     try:
         if request.method == "POST":
-            ped_id = request.POST.get('ped_id')
+            ped_id = request.POST['ped_id']
             item = Pedido.objects.get(pk=ped_id)
-            xitem = {
-                'ped_arq_path': item.ped_arq_path,
-            }
-            with transaction.atomic():
-                item.delete()
-                # Removendo arquivo do disco rígido
-                file_path = os.path.join(settings.BASE_DIR, xitem['ped_arq_path'])
-                if os.path.exists(file_path):
-                    os.remove(file_path)
-    except Pedido.DoesNotExist:
-        return JsonResponse({
-            'error': 'Pedido não encontrado.',
-            'aviso': 'Erro ao deletar o Pedido'
-        }, status=404)
-    except DatabaseError as error:
+            
+            arquivo_path = item.ped_arq_path
+            
+            if arquivo_path:
+                arquivo_path = arquivo_path[1:] 
+                if os.path.exists(arquivo_path):
+                    os.remove(arquivo_path)
+            
+            # Exclui o registro do pedido
+            item.delete()
+            
+            return JsonResponse({
+                'item': None,
+                'aviso': 'Excluído com sucesso!'
+            }, status=200)
+    except (Pedido.DoesNotExist, Exception) as error:
+        print(error)
         return JsonResponse({
             'error': str(error),
-            'aviso': 'Erro ao deletar o Pedido'
+            'aviso': 'Erro ao excluir o Pedido'
         }, status=500)
-    else:
-        return JsonResponse({
-            'item': None,
-            'aviso': 'Excluído com sucesso!'
-        }, status=200)

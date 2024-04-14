@@ -337,6 +337,9 @@ function abrir_modal_ped(){
     $('#ped_btn_salvar').val('insert');
     $('#frm_ped').trigger ('reset');
     $('#ped_dta').val('');
+    $('#ped_arq_path').val('');
+    var dropzoneInstance = Dropzone.forElement('#ped_arq_images');
+    dropzoneInstance.removeAllFiles();
     $('#ped_qtd').val('');
     $('#ped_desc').val('');
     $('#ped_desc').val('');
