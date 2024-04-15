@@ -149,61 +149,307 @@
                 </button>
             </div>
             <div class="modal-body" data-scroll="true">
-                <form method="post" id="frm_ped">
-                    {% csrf_token %}
-                    <input type="hidden" id="ped_id" name="ped_id">
-                    <div class="row">
-                        <div class="form-group col-md-4">
-                            <label class="font-weight-bold" for="ped_dta">Data Pedido</label>
-                            <input type="date" class="form-control" id="ped_dta" name="ped_dta" required>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label class="font-weight-bold" for="cat_pes">Solicitante</label>
-                            <select class="form-control" id="cat_pes" name="cat_pes"></select>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label class="font-weight-bold" for="forn">Fornecedor</label>
-                            <select class="form-control" id="forn" name="forn"></select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-sm-6">
-                            <label class="font-weight-bold" for="ped_qtd">Quantidade</label>
-                            <input type="number" class="form-control" id="ped_qtd" name="ped_qtd" placeholder="Quantidade" required>
-                        </div>
-                        <div class="form-group col-sm-6">
-                            <label class="font-weight-bold" for="cat_uni">Un. medida</label>
-                            <select class="form-control" id="cat_uni" name="cat_uni"></select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-12">
-                            <label for="ped_desc">Descrição</label>
-                            <textarea class="form-control" id="ped_desc" name="ped_desc" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-form-label col-lg-3 col-sm-12 text-lg-right">Nota Fiscal:</label>
-                        <div class="col-lg-4 col-md-9 col-sm-12">
-                            <div class="dropzone dropzone-default dropzone-success" id="ped_arq_images">
-                                <i class="far fa-file-pdf icon-6x"></i>
-                                <div class="dz-message needsclick">
-                                    <h3 class="dropzone-msg-title">Arraste os arquivos aqui ou clique para fazer upload</h3>
-                                    <span class="dropzone-msg-desc">Poderão ser anexados qualquer tipo de arquivo: imagem, PDF, CSV, etc. </span>
+                <ul class="nav nav-tabs nav-tabs-line">
+                    <li class="nav-item">
+                        <a id="aba_ped" class="nav-link active" data-toggle="tab" href="#kt_tab_pane_3">Pedido</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="aba_ped_esp" class="nav-link" data-toggle="tab" href="#kt_tab_pane_4">Especificação técnica</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="aba_ped_ent" class="nav-link" data-toggle="tab" href="#kt_tab_pane_5">Faturamento/ Dados Entrega</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="aba_ped_ver" class="nav-link" data-toggle="tab" href="#kt_tab_pane_6">Verificação</a>
+                    </li>
+                </ul>
+                <div class="tab-content mt-5" id="myTabContent">
+                    <div class="tab-pane fade show active" id="kt_tab_pane_3" role="tabpanel" aria-labelledby="aba_ped">   
+                        <form method="post" id="frm_ped">
+                            {% csrf_token %}
+                            <input type="hidden" id="ped_id" name="ped_id">
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label class="font-weight-bold" for="ped_dta">Data Pedido</label>
+                                    <input type="date" class="form-control" id="ped_dta" name="ped_dta" required>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="font-weight-bold" for="cat_pes">Solicitante</label>
+                                    <select class="form-control" id="cat_pes" name="cat_pes"></select>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="font-weight-bold" for="forn">Fornecedor</label>
+                                    <select class="form-control" id="forn" name="forn"></select>
                                 </div>
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="form-group col-sm-6">
+                                    <label class="font-weight-bold" for="ped_qtd">Quantidade</label>
+                                    <input type="number" class="form-control" id="ped_qtd" name="ped_qtd" placeholder="Quantidade" required>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label class="font-weight-bold" for="cat_uni">Un. medida</label>
+                                    <select class="form-control" id="cat_uni" name="cat_uni"></select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label for="ped_desc">Descrição</label>
+                                    <textarea class="form-control" id="ped_desc" name="ped_desc" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-lg-3 col-sm-12 text-lg-right">Nota Fiscal:</label>
+                                <div class="col-lg-4 col-md-9 col-sm-12">
+                                    <div class="dropzone dropzone-default dropzone-success" id="ped_arq_images">
+                                        <i class="far fa-file-pdf icon-6x"></i>
+                                        <div class="dz-message needsclick">
+                                            <h3 class="dropzone-msg-title">Arraste os arquivos aqui ou clique para fazer upload</h3>
+                                            <span class="dropzone-msg-desc">Poderão ser anexados qualquer tipo de arquivo: imagem, PDF, CSV, etc. </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
-                        <button onclick="ped_add()" type="button" id="ped_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
+                    <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel" aria-labelledby="aba_ped_esp">
+                        <button onclick="abrir_modal_ped_esp()" class="btn btn-light-primary btn-icon btn-circle" >
+                            <i class="flaticon2-add-1"></i>
+                        </button>
+                        <table class="table table-head-custom " id="kt_ped_esp">
+                            <thead>
+                                <tr>
+                                    <th class="datatable-row datatable-row-even">ID</th>
+                                    <th class="datatable-row datatable-row-even">Especificação</th>
+                                    <th class="datatable-row datatable-row-even">PSQ</th>
+                                    <th class="datatable-row datatable-row-even">FISPQ</th>
+                                    <th class="datatable-row datatable-row-even">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table> 
                     </div>
-                </form>
+                    <div class="tab-pane fade" id="kt_tab_pane_5" role="tabpanel" aria-labelledby="aba_ped_ent">
+                        <button onclick="abrir_modal_ped_ent()" class="btn btn-light-primary btn-icon btn-circle" >
+                            <i class="flaticon2-add-1"></i>
+                        </button>
+                        <table class="table table-head-custom " id="kt_ped_ent">
+                            <thead>
+                                <tr>
+                                    <th class="datatable-row datatable-row-even">ID</th>
+                                    <th class="datatable-row datatable-row-even">Data da entrega</th>
+                                    <th class="datatable-row datatable-row-even">Rua</th>
+                                    <th class="datatable-row datatable-row-even">Numero</th>
+                                    <th class="datatable-row datatable-row-even">Complemento</th>
+                                    <th class="datatable-row datatable-row-even">Bairro</th>
+                                    <th class="datatable-row datatable-row-even">Cidade</th>
+                                    <th class="datatable-row datatable-row-even">Cep</th>
+                                    <th class="datatable-row datatable-row-even">Obra</th>
+                                    <th class="datatable-row datatable-row-even">Observação</th>
+                                    <th class="datatable-row datatable-row-even">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table> 
+                    </div>
+                    <div class="tab-pane fade" id="kt_tab_pane_6" role="tabpanel" aria-labelledby="aba_ped_ver">
+                        <button onclick="abrir_modal_ped_ver()" class="btn btn-light-primary btn-icon btn-circle" >
+                            <i class="flaticon2-add-1"></i>
+                        </button>
+                        <table class="table table-head-custom " id="kt_ped_ver">
+                            <thead>
+                                <tr>
+                                    <th class="datatable-row datatable-row-even">ID</th>
+                                    <th class="datatable-row datatable-row-even">Conforme</th>
+                                    <th class="datatable-row datatable-row-even">N° RNC</th>
+                                    <th class="datatable-row datatable-row-even">Descrição Problema </th>
+                                    <th class="datatable-row datatable-row-even">Solução</th>
+                                    <th class="datatable-row datatable-row-even">Responsavel/Ver.</th>
+                                    <th class="datatable-row datatable-row-even">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table> 
+                    </div>                                      
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                <button onclick="ped_add()" type="button" id="ped_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
             </div>
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="frm_ped_esp_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Especificação Tecnica</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" data-scroll="true" >
+                <form method="post" id="frm_ped_esp">
+                    {% csrf_token %}
+                    <div class="row">
+                        <input type="hidden" id="ped_esp_id" name="ped_esp_id">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold" for="ped_esp_obs">Especificação</label>
+                            <textarea class="form-control" id="ped_esp_obs" name="ped_esp_obs" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="checkbox" for="ped_esp_psq"></label>
+                            <div class="checkbox-inline">
+                                <label class="checkbox">
+                                    <input type="checkbox" id="ped_esp_psq" name="ped_esp_psq" placeholder="psq" required>
+                                    <span></span>
+                                    PSQ?</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="checkbox" for="ped_esp_fispq"></label>
+                            <div class="checkbox-inline">
+                                <label class="checkbox">
+                                    <input type="checkbox" id="ped_esp_fispq" name="ped_esp_fispq" placeholder="fispq" required>
+                                    <span></span>
+                                    FISPQ?</label>
+                            </div>
+                        </div>
+                    </div>                            
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                    <button onclick="ped_esp_add()"type="button" id="ped_esp_btn_salvar" class="btn btn-text-primary btn-hover-light-primary font-weight-bold">Salvar</button>
+                </div>
+            </div>                
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="frm_ped_ent_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Faturamento/ Dados de Entrega</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" data-scroll="true" >
+                <form method="post" id="frm_ped_ent">
+                    {% csrf_token %}
+                    <div class="row">
+                        <input type="hidden" id="ped_ent_id" name="ped_ent_id">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label class="font-weight-bold" for="ped_ent_rua">Rua</label>
+                            <input type="text" class="form-control" id="ped_ent_rua" name="ped_ent_rua" placeholder="Rua" required>
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <label class="font-weight-bold" for="ped_ent_num">Numero</label>
+                            <input type="number" class="form-control" id="ped_ent_num" name="ped_ent_num" placeholder="Numero" required>
+                        </div> 
+                        <div class="form-group col-sm-2">
+                            <label class="font-weight-bold" for="ped_ent_rua">Complemento</label>
+                            <input type="text" class="form-control" id="ped_ent_com" name="ped_ent_com" placeholder="Complemento" required>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="font-weight-bold" for="ped_ent_bairro">Bairro</label>
+                            <input type="text" class="form-control" id="ped_ent_bairro" name="ped_ent_bairro" placeholder="Quantidade" required>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label class="font-weight-bold" for="ped_ent_cidade">Cidade</label>
+                            <input type="text" class="form-control" id="ped_ent_cidade" name="ped_ent_cidade" placeholder="Cidade" required>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="font-weight-bold" for="ped_ent_cep">Cep</label>
+                            <input type="number" class="form-control" id="ped_ent_cep" name="ped_ent_cep" placeholder="Cep" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-bold" for="ped_ent_dta">Dta.Entrega</label>
+                            <input type="date" class="form-control" id="ped_ent_dta" name="ped_ent_dta"  required>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label class="font-weight-bold" for="ped_esp_obs">Observação</label>
+                            <textarea class="form-control" id="ped_ent_obs" name="ped_ent_obs" rows="3"></textarea>
+                        </div>
+                    </div>                           
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                    <button onclick="ped_ent_add()"type="button" id="ped_ent_btn_salvar" class="btn btn-text-primary btn-hover-light-primary font-weight-bold">Salvar</button>
+                </div>
+            </div>                
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="frm_ped_ver_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Verificação</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i aria-hidden="true" class="ki ki-close"></i>
+                </button>
+            </div>
+            <div class="modal-body" data-scroll="true" >
+                <form method="post" id="frm_ped_ver">
+                    {% csrf_token %}
+                    <div class="row">
+                        <input type="hidden" id="ped_ver_id" name="ped_ver_id">
+                        <input type="hidden" id="ped_ver_chk" name="ped_ver_chk" value="{{ item.ped_ver_chk }}">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-2">
+                            <label class="checkbox" for="ped_esp_psq"></label>
+                            <div class="checkbox-inline">
+                                <label class="radio radio-success">
+                                    <input type="radio" name="ped_ver_chk_radio" value="true" {% if item.ped_ver_chk %} checked {% endif %}/> Conforme?
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label class="checkbox" for="ped_esp_fispq"></label>
+                            <div class="checkbox-inline">
+                                <label class="radio radio-danger">
+                                    <input type="radio" name="ped_ver_chk_radio" value="false" {% if not item.ped_ver_chk %} checked {% endif %}/> Não Conforme?
+                                    <span></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-des-prob-sol">
+                        <div class="form-group col-md-6">
+                            <label class="font-weight-bold" for="ped_ver_desc">Descrição do problema</label>
+                            <textarea class="form-control" id="ped_ver_desc" name="ped_ver_desc" rows="3"></textarea>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="font-weight-bold" for="ped_ver_sol">Solução</label>
+                            <textarea class="form-control" id="ped_ver_sol" name="ped_ver_sol" rows="3"></textarea>
+                        </div>
+                    </div>                          
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
+                    <button onclick="ped_ver_add()"type="button" id="ped_ver_btn_salvar" class="btn btn-text-primary btn-hover-light-primary font-weight-bold">Salvar</button>
+                </div>
+            </div>                
+        </div>
+    </div>
+</div>
 {% endblock %} 
 
 

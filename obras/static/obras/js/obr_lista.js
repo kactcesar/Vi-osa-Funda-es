@@ -262,6 +262,327 @@ var tabela_ped = function() {
     };
 }();
 
+
+var tabela_ped_esp = function() {
+    var kt_ped_esp = function() {
+        
+        var table = $('#kt_ped_esp');
+        
+        // Destrói a instância existente do DataTable, se houver
+        if ($.fn.DataTable.isDataTable('#kt_ped_esp')) {
+            table.DataTable().destroy();
+        }
+
+        // Inicializa o DataTable novamente com as novas configurações
+        table.on('processing.dt', function (e, settings, processing) {
+            if (processing) {
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Sucesso! Carregando os dados ...'
+                });
+            } else {
+                Toast.close();
+            }
+        }).DataTable({
+            responsive: true,
+            processing: true,
+            pageLength: 10,
+            paging: false,
+            language: {
+                processing:     "Processamento em andamento...",
+                search:         "Pesquisar:",
+                lengthMenu:     "MENU registros por página",
+                info:           "Mostrando de START até END de TOTAL registros",
+                infoEmpty:      "Mostrando 0 até 0 de 0 registros",
+                infoFiltered:   "(Filtrados de MAX registros)",
+                infoPostFix:    "",
+                loadingRecords: "Carregando registros...",
+                zeroRecords:    "Nenhum registro encontrado",
+                emptyTable:     "Nenhum registro encontrado",
+                paginate: {
+                    first:      "Primeiro",
+                    previous:   "Anterior",
+                    next:       "Avançar",
+                    last:       "Último"
+                },
+                aria: {
+                    sortAscending:  ": Ordenar coluna por ordem crescente",
+                    sortDescending: ": Ordenar coluna por ordem decrescente"
+                }
+            },
+            ajax: {
+                url: '/obras/ped_esp_lista/',
+                type: 'POST',
+                dataSrc: 'dados',
+                data: function(d) {
+                    d.csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+                    d.ped_id = $("#ped_id").val();
+                },
+            },
+            order: [[ 0, 'asc' ]],
+            columns: [
+                {data: 'ped_esp_id'},
+                {data: 'ped_esp_obs'},
+                {data: 'ped_esp_psq'},
+                {data: 'ped_esp_fispq'},
+                {data: null, responsivePriority: -1},
+            ],
+            columnDefs: [
+                {
+                    targets: [2,3],
+                    type: "text",
+                    render: function(data) {
+                        if (data === true) {
+                            return '<span class="btn btn-text-primary btn-hover-light-primary font-weight-bold mr-2">Sim</span>';
+                        } else {
+                            return '<span class="btn btn-text-danger btn-hover-light-danger font-weight-bold mr-2">Não</span>';
+                        }
+                    },
+                },         
+                {
+                    targets: [-1],
+                    orderable: false,
+                    render: function(data, type, row) {
+                        return '\
+                            <button type="button" onclick="ped_esp_edt(' + row.ped_esp_id + ')" class="btn btn-light-success btn-icon btn-circle"\
+                                data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
+                                <i class="flaticon-edit"></i>\
+                            </button> \
+                            <button type="button" onclick="ped_esp_del(' + row.ped_esp_id + ')" class="btn btn-light-danger btn-icon btn-circle"\
+                                data-toggle="tooltip" data-placement="bottom" title="Remover">\
+                                <i class="flaticon-delete"></i>\
+                            </button>\
+                        ';
+                    },
+                },
+            ],
+        });  
+    };
+
+    return {
+        //main function to initiate the module
+        init: function() {
+            kt_ped_esp();
+        },
+    };
+}();
+
+var tabela_ped_ent = function() {
+    var kt_ped_ent = function() {
+        
+        var table = $('#kt_ped_ent');
+        
+        // Destrói a instância existente do DataTable, se houver
+        if ($.fn.DataTable.isDataTable('#kt_ped_ent')) {
+            table.DataTable().destroy();
+        }
+
+        // Inicializa o DataTable novamente com as novas configurações
+        table.on('processing.dt', function (e, settings, processing) {
+            if (processing) {
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Sucesso! Carregando os dados ...'
+                });
+            } else {
+                Toast.close();
+            }
+        }).DataTable({
+            responsive: true,
+            processing: true,
+            pageLength: 10,
+            paging: false,
+            language: {
+                processing:     "Processamento em andamento...",
+                search:         "Pesquisar:",
+                lengthMenu:     "MENU registros por página",
+                info:           "Mostrando de START até END de TOTAL registros",
+                infoEmpty:      "Mostrando 0 até 0 de 0 registros",
+                infoFiltered:   "(Filtrados de MAX registros)",
+                infoPostFix:    "",
+                loadingRecords: "Carregando registros...",
+                zeroRecords:    "Nenhum registro encontrado",
+                emptyTable:     "Nenhum registro encontrado",
+                paginate: {
+                    first:      "Primeiro",
+                    previous:   "Anterior",
+                    next:       "Avançar",
+                    last:       "Último"
+                },
+                aria: {
+                    sortAscending:  ": Ordenar coluna por ordem crescente",
+                    sortDescending: ": Ordenar coluna por ordem decrescente"
+                }
+            },
+            ajax: {
+                url: '/obras/ped_ent_lista/',
+                type: 'POST',
+                dataSrc: 'dados',
+                data: function(d) {
+                    d.csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+                    d.ped_id = $("#ped_id").val();
+                },
+            },
+            order: [[ 0, 'asc' ]],
+            columns: [
+                {data: 'ped_ent_id'},
+                {data: 'ped_ent_dta'},
+                {data: 'ped_ent_rua'},
+                {data: 'ped_ent_num'},
+                {data: 'ped_ent_com'},
+                {data: 'ped_ent_bairro'},
+                {data: 'ped_ent_cidade'},
+                {data: 'ped_ent_cep'},
+                {data: 'obr_prop'},
+                {data: 'ped_ent_obs'}, 
+                {data: null, responsivePriority: -1},
+            ],
+            columnDefs: [
+                {
+                    targets: [1],
+                    render: function(data, type, row) {
+                        if (data === null) {
+                            return ''; // Retorna vazio se o valor for nulo
+                        } else {
+                            return moment(data).format("DD/MM/YYYY");
+                        }
+                    }
+                },
+                {
+                    targets: [-1],
+                    orderable: false,
+                    render: function(data, type, row) {
+                        return '\
+                            <button type="button" onclick="ped_ent_edt(' + row.ped_ent_id + ')" class="btn btn-light-success btn-icon btn-circle"\
+                                data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
+                                <i class="flaticon-edit"></i>\
+                            </button> \
+                            <button type="button" onclick="ped_ent_del(' + row.ped_ent_id + ')" class="btn btn-light-danger btn-icon btn-circle"\
+                                data-toggle="tooltip" data-placement="bottom" title="Remover">\
+                                <i class="flaticon-delete"></i>\
+                            </button>\
+                        ';
+                    },
+                },
+            ],
+        });  
+    };
+
+    return {
+        //main function to initiate the module
+        init: function() {
+            kt_ped_ent();
+        },
+    };
+}();
+
+var tabela_ped_ver = function() {
+    var kt_ped_ver = function() {
+        
+        var table = $('#kt_ped_ver');
+        
+        // Destrói a instância existente do DataTable, se houver
+        if ($.fn.DataTable.isDataTable('#kt_ped_ver')) {
+            table.DataTable().destroy();
+        }
+
+        // Inicializa o DataTable novamente com as novas configurações
+        table.on('processing.dt', function (e, settings, processing) {
+            if (processing) {
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Sucesso! Carregando os dados ...'
+                });
+            } else {
+                Toast.close();
+            }
+        }).DataTable({
+            responsive: true,
+            processing: true,
+            pageLength: 10,
+            paging: false,
+            language: {
+                processing:     "Processamento em andamento...",
+                search:         "Pesquisar:",
+                lengthMenu:     "MENU registros por página",
+                info:           "Mostrando de START até END de TOTAL registros",
+                infoEmpty:      "Mostrando 0 até 0 de 0 registros",
+                infoFiltered:   "(Filtrados de MAX registros)",
+                infoPostFix:    "",
+                loadingRecords: "Carregando registros...",
+                zeroRecords:    "Nenhum registro encontrado",
+                emptyTable:     "Nenhum registro encontrado",
+                paginate: {
+                    first:      "Primeiro",
+                    previous:   "Anterior",
+                    next:       "Avançar",
+                    last:       "Último"
+                },
+                aria: {
+                    sortAscending:  ": Ordenar coluna por ordem crescente",
+                    sortDescending: ": Ordenar coluna por ordem decrescente"
+                }
+            },
+            ajax: {
+                url: '/obras/ped_ver_lista/',
+                type: 'POST',
+                dataSrc: 'dados',
+                data: function(d) {
+                    d.csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+                    d.ped_id = $("#ped_id").val();
+                },
+            },
+            order: [[ 0, 'asc' ]],
+            columns: [
+                {data: 'ped_ver_id'},
+                {data: 'ped_ver_chk'},
+                {data: 'ped_ver_rnc_num'},
+                {data: 'ped_ver_desc'},
+                {data: 'ped_ver_sol'},
+                {data: 'usu_cad_nome'},
+                {data: null, responsivePriority: -1},
+            ],
+            columnDefs: [
+                {
+                    targets: [1],
+                    type: "text",
+                    render: function(data) {
+                        if (data === true) {
+                            return '<span class="btn btn-text-primary btn-hover-light-primary font-weight-bold mr-2">Sim</span>';
+                        } else {
+                            return '<span class="btn btn-text-danger btn-hover-light-danger font-weight-bold mr-2">Não</span>';
+                        }
+                    },
+                },     
+                {
+                    targets: [-1],
+                    orderable: false,
+                    render: function(data, type, row) {
+                        return '\
+                            <button type="button" onclick="ped_ver_edt(' + row.ped_ver_id + ')" class="btn btn-light-success btn-icon btn-circle"\
+                                data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
+                                <i class="flaticon-edit"></i>\
+                            </button> \
+                            <button type="button" onclick="ped_ver_del(' + row.ped_ver_id + ')" class="btn btn-light-danger btn-icon btn-circle"\
+                                data-toggle="tooltip" data-placement="bottom" title="Remover">\
+                                <i class="flaticon-delete"></i>\
+                            </button>\
+                        ';
+                    },
+                },
+            ],
+        });  
+    };
+
+    return {
+        //main function to initiate the module
+        init: function() {
+            kt_ped_ver();
+        },
+    };
+}();
+
+
 var KTDropzonePedidoArquivo = function() {
 
     var dropzone_arquivos = function () {
@@ -321,7 +642,19 @@ jQuery(document).ready(function() {
     pesq_unidade('#cat_uni')
     pesq_forn('#forn')
 
-    
+    $('input[type=radio][name=ped_ver_chk_radio]').change(function() {
+        $('#ped_ver_chk').val(this.value);
+    });
+
+    $('input[name="ped_ver_chk_radio"]').change(function() {
+        if ($(this).val() === 'true') {
+            // Se for "Conforme", esconda as áreas de descrição do problema e solução
+            $('.row-des-prob-sol').hide();
+        } else {
+            // Se for "Não Conforme", mostre as áreas de descrição do problema e solução
+            $('.row-des-prob-sol').show();
+        }
+    });
 });
 
 function abrir_modal_obr(){
@@ -347,7 +680,44 @@ function abrir_modal_ped(){
     $('#cat_uni').val('').trigger('change'); 
     $('#cat_pes').val('').trigger('change');
     $('#frm_ped_modal').modal('show');
+    $('#aba_ped_esp').hide();
+    $('#aba_ped_ent').hide();
+    $('#aba_ped_ver').hide();
 }
+
+function abrir_modal_ped_esp(){
+    $('#ped_esp_btn_salvar').val('insert');
+    $('#ped_esp_obs').val('');
+    $('#ped_esp_fispq').prop('checked', false);
+    $('#ped_esp_psq').prop('checked', false); 
+    $('#frm_ped_esp_modal').modal('show');
+}
+
+
+function abrir_modal_ped_ent(){
+    $('#ped_ent_btn_salvar').val('insert');
+    $('#ped_ent_rua').val('');
+    $('#ped_ent_bairro').val('');
+    $('#ped_ent_cidade').val('');
+    $('#ped_ent_num').val('');
+    $('#ped_ent_com').val('');
+    $('#ped_ent_cep').val('');
+    $('#ped_ent_obs').val('');
+    $('#ped_ent_dta').val('')
+    $('#frm_ped_ent_modal').modal('show');
+}
+
+function abrir_modal_ped_ver(){
+    $('#ped_ver_btn_salvar').val('insert');
+    $('#ped_ver_rnc_num').val('');
+    $('#ped_ver_desc').val('');
+    $('#ped_ver_sol').val('');
+    $('#ped_ver_chk').prop('checked', false);
+    $('#ped_ver_chk2').prop('checked', false);
+    $('#frm_ped_ver_modal').modal('show');
+}
+
+
 
 function obr_add(){
     var url
@@ -550,43 +920,13 @@ function ped_edt(ped_id){
         var forn = new Option(item.forn_nome,item.forn_id,true,true);
         $('#forn').append(forn).trigger('change');
 
-        if (item.ped_arq_path.match(/.(jpg|jpeg|png|jpg2|bmp|svg)$/i)){
-            $('.pedido-arquivo-edicao-imgs').show();
-            $('.pedido-arquivo-edicao-docs').hide();
-            $('#ped_arq_path').attr('src', item.ped_arq_path);
-        }
-        else{
-            if (item.ped_arq_path.match(/.(txt|doc|docx|ppt)$/i))
-            {
-                $('#arquivos_outros_tipos').removeClass("text-danger");
-                $('#arquivos_outros_tipos').removeClass("text-success");
-                $('#arquivos_outros_tipos').removeClass("fa-file-pdf");
-                $('#arquivos_outros_tipos').removeClass("fa-file-excel");
-                $('#arquivos_outros_tipos').addClass("fa-file-word");
-                $('#arquivos_outros_tipos').addClass("text-info");
-            }
-            else if(item.ped_arq_path.match(/.(xls|xlsx)$/i))
-            {
-                $('#arquivos_outros_tipos').removeClass("fa-file-pdf");
-                $('#arquivos_outros_tipos').removeClass("fa-file-word");
-                $('#arquivos_outros_tipos').removeClass("text-danger");
-                $('#arquivos_outros_tipos').removeClass("text-info");                
-                $('#arquivos_outros_tipos').addClass("fa-file-excel");
-                $('#arquivos_outros_tipos').addClass("text-success");
-            }
-            else
-            {
-                $('#arquivos_outros_tipos').removeClass("fa-file-excel");
-                $('#arquivos_outros_tipos').removeClass("fa-file-word");
-                $('#arquivos_outros_tipos').removeClass("text-success");
-                $('#arquivos_outros_tipos').removeClass("text-info");
-                $('#arquivos_outros_tipos').addClass("fa-file-pdf");
-                $('#arquivos_outros_tipos').addClass("text-danger");
-            }
-            
-            $('.pedido-arquivo-edicao-imgs').hide();
-            $('.pedido-arquivo-edicao-docs').show();
-        }
+        tabela_ped_esp.init()
+        tabela_ped_ent.init()
+        tabela_ped_ver.init()
+        
+        $('#aba_ped_esp').show();
+        $('#aba_ped_ent').show();
+        $('#aba_ped_ver').show();
 
         $('#ped_btn_salvar').val('update');
         $('#frm_ped_modal').modal('show');
@@ -647,6 +987,369 @@ function ped_del(ped_id) {
     });
 };
 
+
+function ped_esp_add(){
+    var url
+    if($('#ped_esp_btn_salvar').val() == 'update'){
+        url = '/obras/ped_esp_edt/'
+    }else{
+        url = '/obras/ped_esp_add/'
+    }
+
+    var frm_ped_esp = new FormData(document.getElementById('frm_ped_esp'));
+    frm_ped_esp.append('ped_id', $('#ped_id').val());
+
+    $.ajax({
+        method: 'POST',
+        url: url,
+        data: frm_ped_esp,
+        contentType: false,
+        cache: false,
+        processData: false,
+        beforeSend: function() {
+            Swal.fire({
+                title: "Carregando os dados",
+                text: "Aguarde ...",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                didOpen: function() {            
+                    Swal.showLoading();
+                }
+            })
+        },
+    })
+    .done(function(data,  textStatus, jqXHR){
+        if (jqXHR.status === 200 && jqXHR.readyState === 4){
+            $('#kt_ped_esp').DataTable().ajax.reload();
+            $('#frm_ped_esp_modal').modal('hide');
+            Swal.close();
+        }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        Swal.close();
+        console.log(jqXHR);
+        Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+    });
+}
+
+function ped_esp_edt(ped_esp_id){
+    $.getJSON('/obras/ped_esp_atb/',
+        {
+            id:ped_esp_id
+        }
+    ).done(function (item) {
+        $('#ped_esp_id').val(item.ped_esp_id);
+        $('#ped_esp_obs').val(item.ped_esp_obs);
+
+        if (item.ped_esp_fispq) {
+            $('#ped_esp_fispq').prop('checked', true);
+        } else {
+            $('#ped_esp_fispq').prop('checked', false);
+        }
+        if (item.ped_esp_psq) {
+            $('#ped_esp_psq').prop('checked', true);
+        } else {
+            $('#ped_esp_psq').prop('checked', false);
+        }
+        $('#ped_esp_btn_salvar').val('update');
+        $('[href="#kt_tab_pane_1"]').tab('show');
+        $('#frm_ped_esp_modal').modal('show');
+    })
+    .fail(function (jqxhr, settings, ex) {
+        exibeDialogo(result.responseText, tipoAviso.ERRO);
+    });
+}
+
+function ped_esp_del(ped_esp_id) {
+    Swal.fire({
+        title: "Deseja executar esta operação?",
+        text: "O registro " + ped_esp_id + " será removido permanentemente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ok, desejo remover!",
+        cancelButtonText: "Não, cancelar!",
+        reverseButtons: true
+    }).then(function(result) {
+        if (result.value) {
+            var dados = new FormData();
+                dados.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+                dados.append("ped_esp_id",ped_esp_id);
+            $.ajax({
+                method: 'POST',
+                url:'/obras/ped_esp_del/',
+                data:  dados,
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend: function() {
+                    Swal.fire({
+                        title: "Operação em andamento",
+                        text: "Aguarde ...",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        didOpen: function() {            
+                            Swal.showLoading();
+                        }
+                    })
+                },
+            })
+            .done(function(data,  textStatus, jqXHR){
+                console.log(jqXHR);
+                if (jqXHR.status === 200 && jqXHR.readyState === 4){
+                    $('#kt_ped_esp').DataTable().ajax.reload();
+                    $('#frm_ped_esp_modal').modal('hide');
+                    Swal.close();
+                }
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                Swal.close();
+                Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+            });
+        }
+    });
+};
+
+
+
+
+function ped_ent_add(){
+    var url
+    if($('#ped_ent_btn_salvar').val() == 'update'){
+        url = '/obras/ped_ent_edt/'
+    }else{
+        url = '/obras/ped_ent_add/'
+    }
+
+    var frm_ped_ent = new FormData(document.getElementById('frm_ped_ent'));
+    frm_ped_ent.append('ped_id', $('#ped_id').val());
+    $.ajax({
+        method: 'POST',
+        url: url,
+        data: frm_ped_ent,
+        contentType: false,
+        cache: false,
+        processData: false,
+        beforeSend: function() {
+            Swal.fire({
+                title: "Carregando os dados",
+                text: "Aguarde ...",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                didOpen: function() {            
+                    Swal.showLoading();
+                }
+            })
+        },
+    })
+    .done(function(data,  textStatus, jqXHR){
+        if (jqXHR.status === 200 && jqXHR.readyState === 4){
+            $('#kt_ped_ent').DataTable().ajax.reload();
+            $('#frm_ped_ent_modal').modal('hide');
+            Swal.close();
+        }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        Swal.close();
+        console.log(jqXHR);
+        Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+    });
+}
+
+function ped_ent_edt(ped_ent_id){
+    $.getJSON('/obras/ped_ent_atb/',
+        {
+            id:ped_ent_id
+        }
+    ).done(function (item) {
+        $('#ped_ent_id').val(item.ped_ent_id);
+        $('#ped_ent_rua').val(item.ped_ent_rua);
+        $('#ped_ent_bairro').val(item.ped_ent_bairro);
+        $('#ped_ent_cidade').val(item.ped_ent_cidade);
+        $('#ped_ent_num').val(item.ped_ent_num);
+        $('#ped_ent_com').val(item.ped_ent_com);
+        $('#ped_ent_cep').val(item.ped_ent_cep);
+        $('#ped_ent_obs').val(item.ped_ent_obs);
+        $('#ped_ent_dta').val(moment(item.ped_ent_dta).format("YYYY-MM-DD"));
+        $('#ped_ent_btn_salvar').val('update');
+        $('[href="#kt_tab_pane_1"]').tab('show');
+        $('#frm_ped_ent_modal').modal('show');
+    })
+    .fail(function (jqxhr, settings, ex) {
+        exibeDialogo(result.responseText, tipoAviso.ERRO);
+    });
+}
+
+function ped_ent_del(ped_ent_id) {
+    Swal.fire({
+        title: "Deseja executar esta operação?",
+        text: "O registro " + ped_ent_id + " será removido permanentemente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ok, desejo remover!",
+        cancelButtonText: "Não, cancelar!",
+        reverseButtons: true
+    }).then(function(result) {
+        if (result.value) {
+            var dados = new FormData();
+                dados.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+                dados.append("ped_ent_id",ped_ent_id);
+            $.ajax({
+                method: 'POST',
+                url:'/obras/ped_ent_del/',
+                data:  dados,
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend: function() {
+                    Swal.fire({
+                        title: "Operação em andamento",
+                        text: "Aguarde ...",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        didOpen: function() {            
+                            Swal.showLoading();
+                        }
+                    })
+                },
+            })
+            .done(function(data,  textStatus, jqXHR){
+                console.log(jqXHR);
+                if (jqXHR.status === 200 && jqXHR.readyState === 4){
+                    $('#kt_ped_ent').DataTable().ajax.reload();
+                    $('#frm_ped_ent_modal').modal('hide');
+                    Swal.close();
+                }
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                Swal.close();
+                Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+            });
+        }
+    });
+};
+
+function ped_ver_add(){
+    var url
+    if($('#ped_ver_btn_salvar').val() == 'update'){
+        url = '/obras/ped_ver_edt/'
+    }else{
+        url = '/obras/ped_ver_add/'
+    }
+
+    var frm_ped_ver = new FormData(document.getElementById('frm_ped_ver'));
+    frm_ped_ver.append('ped_id', $('#ped_id').val());
+    $.ajax({
+        method: 'POST',
+        url: url,
+        data: frm_ped_ver,
+        contentType: false,
+        cache: false,
+        processData: false,
+        beforeSend: function() {
+            Swal.fire({
+                title: "Carregando os dados",
+                text: "Aguarde ...",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                didOpen: function() {            
+                    Swal.showLoading();
+                }
+            })
+        },
+    })
+    .done(function(data,  textStatus, jqXHR){
+        if (jqXHR.status === 200 && jqXHR.readyState === 4){
+            $('#kt_ped_ver').DataTable().ajax.reload();
+            $('#frm_ped_ver_modal').modal('hide');
+            Swal.close();
+        }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        Swal.close();
+        console.log(jqXHR);
+        Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+    });
+}
+
+function ped_ver_edt(ped_ver_id){
+    $.getJSON('/obras/ped_ver_atb/',
+        {
+            id:ped_ver_id
+        }
+    ).done(function (item) {
+        $('#ped_ver_id').val(item.ped_ver_id);
+        $('#ped_ver_rnc_num').val(item.ped_ver_rnc_num);
+        $('#ped_ver_desc').val(item.ped_ver_desc);
+        $('#ped_ver_sol').val(item.ped_ver_sol);
+        
+        if (item.ped_ver_chk) {
+            $('#ped_ver_chk').prop('checked', true);
+        } else {
+            $('#ped_ver_chk').prop('checked', false);
+        }
+        $('#ped_ver_btn_salvar').val('update');
+        $('[href="#kt_tab_pane_1"]').tab('show');
+        $('#frm_ped_ver_modal').modal('show');
+    })
+    .fail(function (jqxhr, settings, ex) {
+        exibeDialogo(result.responseText, tipoAviso.ERRO);
+    });
+}
+
+function ped_ver_del(ped_ver_id) {
+    Swal.fire({
+        title: "Deseja executar esta operação?",
+        text: "O registro " + ped_ver_id + " será removido permanentemente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ok, desejo remover!",
+        cancelButtonText: "Não, cancelar!",
+        reverseButtons: true
+    }).then(function(result) {
+        if (result.value) {
+            var dados = new FormData();
+                dados.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+                dados.append("ped_ver_id",ped_ver_id);
+            $.ajax({
+                method: 'POST',
+                url:'/obras/ped_ver_del/',
+                data:  dados,
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend: function() {
+                    Swal.fire({
+                        title: "Operação em andamento",
+                        text: "Aguarde ...",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        didOpen: function() {            
+                            Swal.showLoading();
+                        }
+                    })
+                },
+            })
+            .done(function(data,  textStatus, jqXHR){
+                console.log(jqXHR);
+                if (jqXHR.status === 200 && jqXHR.readyState === 4){
+                    $('#kt_ped_ver').DataTable().ajax.reload();
+                    $('#frm_ped_ver_modal').modal('hide');
+                    Swal.close();
+                }
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                Swal.close();
+                Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+            });
+        }
+    });
+};
 function visualizar(ped_id) {
     const image = new Viewer(document.getElementById('ped_arq_path_' + ped_id));
      image.show();

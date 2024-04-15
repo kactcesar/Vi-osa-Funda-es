@@ -24,8 +24,8 @@ class Obra(models.Model):
         
 class Pedido(models.Model):
     ped_id = models.BigAutoField(primary_key=True)
-    ped_num = models.CharField(70000)
-    ult_num = models.CharField(70000)
+    ped_num = models.CharField(max_length=5000)
+    ult_num = models.CharField(max_length=5000)
     ped_qtd = models.DecimalField(max_digits=10, decimal_places=2)  #
     ped_desc = models.CharField(max_length=255)
     ped_arq_path = models.CharField(max_length=255)
@@ -42,3 +42,56 @@ class Pedido(models.Model):
     class Meta:
         managed = False
         db_table = 'pedido'
+        
+class PedidoEspecificacao(models.Model):
+    ped_esp_id = models.BigAutoField(primary_key=True)
+    ped_esp_obs = models.CharField(max_length=5000)
+    ped_esp_psq = models.BooleanField(default=True)
+    ped_esp_fispq = models.BooleanField(default=True)
+    ped = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    usu_cad = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_cad_ped_esp')
+    usu_alt = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_alt_ped_esp')
+    usu_cad_dta = models.DateField(auto_now_add=True)
+    usu_alt_dta = models.DateField(auto_now=True)
+
+    class Meta:
+        managed = False
+        db_table = 'pedidoespecificacao'
+        
+        
+        
+class PedidoEntrega(models.Model):
+    ped_ent_id = models.BigAutoField(primary_key=True)
+    ped_ent_rua = models.CharField(max_length=5000)
+    ped_ent_bairro = models.CharField(max_length=5000)
+    ped_ent_cidade = models.CharField(max_length=5000)
+    ped_ent_num = models.CharField(max_length=5000)
+    ped_ent_com = models.CharField(max_length=5000)
+    ped_ent_cep = models.CharField(max_length=5000)
+    ped_ent_obs = models.CharField(max_length=5000)
+    ped = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    usu_cad = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_cad_ped_ent')
+    usu_alt = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_alt_ped_ent')
+    usu_cad_dta = models.DateField(auto_now_add=True)
+    usu_alt_dta = models.DateField(auto_now=True)
+
+    class Meta:
+        managed = False
+        db_table = 'pedidoentrega'
+        
+        
+class PedidoVerificacao(models.Model):
+    ped_ver_id = models.BigAutoField(primary_key=True)
+    ped_ver_chk = models.BooleanField(default=True)
+    ped_ver_rnc_num = models.CharField(max_length=5000)
+    ped_ver_desc = models.CharField(max_length=5000)
+    ped_ver_sol = models.CharField(max_length=5000)
+    ped = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    usu_cad = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_cad_ped_ver')
+    usu_alt = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_alt_ped_ver')
+    usu_cad_dta = models.DateField(auto_now_add=True)
+    usu_alt_dta = models.DateField(auto_now=True)
+
+    class Meta:
+        managed = False
+        db_table = 'pedidoverificacao'

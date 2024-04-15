@@ -32,3 +32,30 @@ class PedidoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pedido
         fields = '__all__'  
+
+class PedidoEspecificacaoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PedidoEspecificacao
+        fields = '__all__'  
+        
+class PedidoEntregaSerializer(serializers.ModelSerializer):
+
+    ped_id = serializers.IntegerField(source="ped.ped_id", read_only="True")
+    ped_num = serializers.CharField(source="ped.ped_num", read_only="True")
+    obr_prop = serializers.CharField(source="ped.obr.obr_prop", read_only="True")
+
+    
+    class Meta:
+        model = PedidoEntrega
+        fields = '__all__'  
+        
+class PedidoVerificacaoSerializer(serializers.ModelSerializer):
+
+    
+    usu_cad_id = serializers.IntegerField(source="usu_cad.usu_cad_id", read_only="True")
+    usu_cad_nome = serializers.CharField(source="usu_cad.pes_nome", read_only="True")
+    
+    class Meta:
+        model = PedidoVerificacao
+        fields = '__all__'  
