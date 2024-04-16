@@ -16,22 +16,24 @@ class ObraSerializer(serializers.ModelSerializer):
         
         
 class PedidoSerializer(serializers.ModelSerializer):
+    forn_id = serializers.IntegerField(source="forn.forn_id", read_only=True)
+    forn_nome = serializers.CharField(source="forn.forn_nome", read_only=True)
+    forn_cnpj = serializers.CharField(source="forn.forn_cnpj", read_only=True)
+    forn_ies = serializers.CharField(source="forn.forn_ies", read_only=True)
+    pes_id = serializers.IntegerField(source="cat_pes.pes_id", read_only=True)
+    pes_nome = serializers.CharField(source="cat_pes.pes_nome", read_only=True)
+    pedido_produtos = serializers.SerializerMethodField()
 
-    forn_id = serializers.IntegerField(source="forn.forn_id", read_only="True")
-    forn_nome = serializers.CharField(source="forn.forn_nome", read_only="True")
-    forn_cnpj = serializers.CharField(source="forn.forn_cnpj", read_only="True")
-    forn_ies = serializers.CharField(source="forn.forn_ies", read_only="True")
-
-    pes_id = serializers.IntegerField(source="cat_pes.pes_id", read_only="True")
-    pes_nome = serializers.CharField(source="cat_pes.pes_nome", read_only="True")
-
-    cat_uni_id = serializers.IntegerField(source="cat_uni.cat_uni_id", read_only="True")
-    cat_uni_nome = serializers.CharField(source="cat_uni.cat_uni_nome", read_only="True")
-    cat_uni_cor = serializers.CharField(source="cat_uni.cat_uni_cor", read_only="True")
-    
     class Meta:
         model = Pedido
-        fields = '__all__'  
+        fields = '__all__'
+
+    def get_pedido_produtos(self, obj):
+        # Filtragem reversa para obter os produtos relacionados a este pedido
+        pedido_produtos = PedidoProduto.objects.filter(ped=obj)
+        # Serializar os produtos usando o PedidoProdutoSerializer
+        serializer = PedidoProdutoSerializer(pedido_produtos, many=True)
+        return serializer.data
 
 class PedidoEspecificacaoSerializer(serializers.ModelSerializer):
 
@@ -63,4 +65,22 @@ class PedidoVerificacaoSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = PedidoVerificacao
+        fields = '__all__'  
+
+class PedidoProdutoSerializer(serializers.ModelSerializer):
+
+    
+    usu_cad_id = serializers.IntegerField(source="usu_cad.usu_cad_id", read_only="True")
+    usu_cad_nome = serializers.CharField(source="usu_cad.pes_nome", read_only="True")
+    
+    cat_uni_id = serializers.IntegerField(source="cat_uni.cat_uni_id", read_only="True")
+    cat_uni_nome = serializers.CharField(source="cat_uni.cat_uni_nome", read_only="True")
+    cat_uni_cor = serializers.CharField(source="cat_uni.cat_uni_cor", read_only="True")
+
+    cat_prod_id = serializers.IntegerField(source="cat_prod.cat_prod_id", read_only="True")
+    cat_prod_nome = serializers.CharField(source="cat_prod.cat_prod_nome", read_only="True")
+    
+    
+    class Meta:
+        model = PedidoProduto
         fields = '__all__'  

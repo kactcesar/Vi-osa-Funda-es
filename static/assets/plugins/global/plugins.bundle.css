@@ -2985,7 +2985,7 @@ select.selectpicker {
   box-sizing: border-box;
   cursor: pointer;
   display: block;
-  height: 38px;
+  height: 40px;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;

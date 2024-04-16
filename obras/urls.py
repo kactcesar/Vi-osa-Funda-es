@@ -20,6 +20,13 @@ urlpatterns = [
     path('ped_edt/', ped_edt, name='ped_edt'),
     path('ped_del/', ped_del, name='ped_del'),
     
+    path('ped_prod_lista/', ped_prod_lista, name='ped_prod_lista'),
+    path('ped_prod_atb/', ped_prod_atb, name='ped_prod_atb'),
+    path('ped_prod_add/', ped_prod_add, name='ped_prod_add'),
+    path('ped_prod_edt/', ped_prod_edt, name='ped_prod_edt'),
+    path('ped_prod_del/', ped_prod_del, name='ped_prod_del'),
+
+    
     path('ped_esp_lista/', ped_esp_lista, name='ped_esp_lista'),
     path('ped_esp_atb/', ped_esp_atb, name='ped_esp_atb'),
     path('ped_esp_add/', ped_esp_add, name='ped_esp_add'),

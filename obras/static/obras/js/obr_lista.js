@@ -194,9 +194,54 @@ var tabela_ped = function() {
                 {data: 'forn_cnpj'},
                 {data: 'forn_ies'},
                 {data: 'ped_num'},
-                {data: 'ped_qtd'},
-                {data: 'cat_uni_nome'},
-                {data: 'ped_desc'},
+                {
+                    // Renderização personalizada para listar os nomes dos produtos relacionados
+                    data: 'pedido_produtos',
+                    render: function(data) {
+                        if (data.length > 0) {
+                            // Se houver produtos relacionados
+                            var produtos = data.map(function(produto) {
+                                return produto.cat_uni_nome;
+                            });
+                            return produtos.join(', '); // Retorna uma lista separada por vírgulas dos nomes dos produtos
+                        } else {
+                            // Se não houver produtos relacionados
+                            return ''; // Retorna uma string vazia
+                        }
+                    }
+                },
+                {
+                    // Renderização personalizada para listar os nomes dos produtos relacionados
+                    data: 'pedido_produtos',
+                    render: function(data) {
+                        if (data.length > 0) {
+                            // Se houver produtos relacionados
+                            var produtos = data.map(function(produto) {
+                                return produto.cat_prod_nome;
+                            });
+                            return produtos.join(', '); // Retorna uma lista separada por vírgulas dos nomes dos produtos
+                        } else {
+                            // Se não houver produtos relacionados
+                            return ''; // Retorna uma string vazia
+                        }
+                    }
+                },
+                {
+                    // Renderização personalizada para listar as quantidades dos produtos relacionados
+                    data: 'pedido_produtos',
+                    render: function(data) {
+                        if (data.length > 0) {
+                            // Se houver produtos relacionados
+                            var quantidades = data.map(function(produto) {
+                                return produto.ped_prod_qtd;
+                            });
+                            return quantidades.join(', '); // Retorna uma lista separada por vírgulas das quantidades dos produtos
+                        } else {
+                            // Se não houver produtos relacionados
+                            return ''; // Retorna uma string vazia
+                        }
+                    }
+                },
                 {data: 'ped_arq_path'},
                 {data: null, responsivePriority: -1},
             ],
@@ -212,7 +257,7 @@ var tabela_ped = function() {
                     }
                 },
                 {
-                    targets: [10],
+                    targets: [8],
                     className: 'text-center',
                     orderable: false,
                     render: function(data, type, row) {
@@ -251,7 +296,47 @@ var tabela_ped = function() {
                     },
                 },
             ],
+            // Redireciona os botões de exportação para os botões personalizados
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'csvHtml5',
+                    text: 'CSV',
+                    className: 'dropdown-item',
+                    exportOptions: {
+                        columns: [6, 7, 8, 9, 3, 2, 1, 4] // Índices das colunas a serem exportadas
+                    },
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: 'PDF',
+                    className: 'dropdown-item',
+                    exportOptions: {
+                        columns: [6, 7, 8, 9, 3, 2, 1, 4] // Índices das colunas a serem exportadas
+                    },
+                    customize: function(doc) {
+                        // Ajuste o layout do PDF aqui
+                        doc.pageMargins = [10, 30, 20, 30]; // Margens esquerda, superior, direita, inferior
+                        doc.defaultStyle.fontSize = 10; // Tamanho da fonte padrão
+                        doc.styles.tableHeader.fontSize = 12; // Tamanho da fonte do cabeçalho da tabela
+                        doc.styles.title.fontSize = 14; // Tamanho da fonte do título (se houver)
+                        // etc.
+                    }
+                }
+            ]
         });  
+
+        // Esconde os botões padrão do DataTable
+        $('.buttons-html5').hide();
+
+        // Vincula eventos de clique aos botões dentro do dropdown
+        $('#export-csv').click(function() {
+            table.DataTable().button('.buttons-csv').trigger();
+        });
+
+        $('#export-pdf').click(function() {
+            table.DataTable().button('.buttons-pdf').trigger();
+        });
     };
 
     return {
@@ -363,6 +448,100 @@ var tabela_ped_esp = function() {
         //main function to initiate the module
         init: function() {
             kt_ped_esp();
+        },
+    };
+}();
+
+var tabela_ped_prod = function() {
+    var kt_ped_prod = function() {
+        
+        var table = $('#kt_ped_prod');
+        
+        // Destrói a instância existente do DataTable, se houver
+        if ($.fn.DataTable.isDataTable('#kt_ped_prod')) {
+            table.DataTable().destroy();
+        }
+
+        // Inicializa o DataTable novamente com as novas configurações
+        table.on('processing.dt', function (e, settings, processing) {
+            if (processing) {
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Sucesso! Carregando os dados ...'
+                });
+            } else {
+                Toast.close();
+            }
+        }).DataTable({
+            responsive: true,
+            processing: true,
+            pageLength: 10,
+            paging: false,
+            language: {
+                processing:     "Processamento em andamento...",
+                search:         "Pesquisar:",
+                lengthMenu:     "MENU registros por página",
+                info:           "Mostrando de START até END de TOTAL registros",
+                infoEmpty:      "Mostrando 0 até 0 de 0 registros",
+                infoFiltered:   "(Filtrados de MAX registros)",
+                infoPostFix:    "",
+                loadingRecords: "Carregando registros...",
+                zeroRecords:    "Nenhum registro encontrado",
+                emptyTable:     "Nenhum registro encontrado",
+                paginate: {
+                    first:      "Primeiro",
+                    previous:   "Anterior",
+                    next:       "Avançar",
+                    last:       "Último"
+                },
+                aria: {
+                    sortAscending:  ": Ordenar coluna por ordem crescente",
+                    sortDescending: ": Ordenar coluna por ordem decrescente"
+                }
+            },
+            ajax: {
+                url: '/obras/ped_prod_lista/',
+                type: 'POST',
+                dataSrc: 'dados',
+                data: function(d) {
+                    d.csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+                    d.ped_id = $("#ped_id").val();
+                },
+            },
+            order: [[ 0, 'asc' ]],
+            columns: [
+                {data: 'ped_prod_id'},
+                {data: 'cat_prod_nome'},
+                {data: 'cat_uni_nome'},
+                {data: 'ped_prod_qtd'},
+                {data: 'ped_prod_desc'},
+                {data: null, responsivePriority: -1},
+            ],
+            columnDefs: [
+                {
+                    targets: [-1],
+                    orderable: false,
+                    render: function(data, type, row) {
+                        return '\
+                            <button type="button" onclick="ped_prod_edt(' + row.ped_prod_id + ')" class="btn btn-light-success btn-icon btn-circle"\
+                                data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
+                                <i class="flaticon-edit"></i>\
+                            </button> \
+                            <button type="button" onclick="ped_prod_del(' + row.ped_prod_id + ')" class="btn btn-light-danger btn-icon btn-circle"\
+                                data-toggle="tooltip" data-placement="bottom" title="Remover">\
+                                <i class="flaticon-delete"></i>\
+                            </button>\
+                        ';
+                    },
+                },
+            ],
+        });  
+    };
+
+    return {
+        //main function to initiate the module
+        init: function() {
+            kt_ped_prod();
         },
     };
 }();
@@ -655,6 +834,8 @@ jQuery(document).ready(function() {
     pesq_pessoa('#cat_pes')
     pesq_pessoa('#cat_pes2')
     pesq_unidade('#cat_uni')
+    pesq_produto('#cat_prod')
+
     pesq_forn('#forn')
 
     $('input[type=radio][name=ped_ver_chk_radio]').change(function() {
@@ -670,8 +851,33 @@ jQuery(document).ready(function() {
             $('.row-des-prob-sol').show();
         }
     });
+
+    var checkbox = jQuery('#toggleInputs');
+            checkbox.on('change', function() {
+                var specificInputs = jQuery('#specificInputs');
+                if (checkbox.prop('checked')) {
+                    specificInputs.show();
+                } else {
+                    specificInputs.hide();
+                }
+            });
+        
+$('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+$($.fn.dataTable.tables(true)).DataTable()
+    .columns.adjust();
 });
 
+});
+
+function limparCampos() {
+    // Limpar os valores dos campos usando jQuery
+    $('#cat_prod').val('');
+    $('#ped_prod_qtd').val('');
+    $('#cat_uni').val('').trigger('change');
+    $('#cat_prod').val('').trigger('change');
+    $('#ped_prop_desc').val('');
+}
+        
 function abrir_modal_obr(){
     $('#obr_btn_salvar').val('insert');
     $('#obr_prop').val('');
@@ -691,13 +897,26 @@ function abrir_modal_ped(){
     $('#ped_qtd').val('');
     $('#ped_desc').val('');
     $('#ped_desc').val('');
-    $('#forn').val('').trigger('change'); 
-    $('#cat_uni').val('').trigger('change'); 
+    $('#forn').val('').trigger('change');  
     $('#cat_pes').val('').trigger('change');
     $('#frm_ped_modal').modal('show');
     $('#aba_ped_esp').hide();
     $('#aba_ped_ent').hide();
     $('#aba_ped_ver').hide();
+    $('#aba_ped_prod').hide();
+    $('#toggleInputs').hide();
+    $('#toggleInputs').prop('checked', false);
+    $('#labelToggleInputs').hide();
+    
+}
+
+function abrir_modal_ped_prod(){
+    $('#ped_prod_btn_salvar').val('insert');
+    $('#ped_prod_qtd').val('');
+    $('#ped_prod_desc').val('');
+    $('#cat_uni').val('').trigger('change'); 
+    $('#cat_prod').val('').trigger('change');
+    $('#frm_ped_prod_modal').modal('show');
 }
 
 function abrir_modal_ped_esp(){
@@ -797,10 +1016,6 @@ function obr_edt(obr_id){
         var cat_obr = new Option(item.cat_obr_nome,item.cat_obr_id,true,true);
         $('#cat_obr').append(cat_obr).trigger('change');
         
-        $('#cat_uni').empty();
-        var cat_uni = new Option(item.cat_uni_nome,item.cat_uni_id,true,true);
-        $('#cat_uni').append(cat_uni).trigger('change');
-
         $('#obr_btn_salvar').val('update');
         $('#aba2').show();
         $('[href="#kt_tab_pane_1"]').tab('show');
@@ -904,7 +1119,9 @@ function ped_add() {
     .done(function(data, textStatus, jqXHR) {
         if (jqXHR.status === 200 && jqXHR.readyState === 4) {
             $('#kt_ped').DataTable().ajax.reload();
-            $('#frm_ped_modal').modal('hide');
+            $('#aba_ped_prod').show();
+            $('#toggleInputs').show();
+            $('#labelToggleInputs').show();
             Swal.close();
         }
     })
@@ -924,8 +1141,6 @@ function ped_edt(ped_id){
     ).done(function (item) {
         $('#ped_id').val(item.ped_id);
         $('#ped_num').val(item.ped_num);
-        $('#ped_qtd').val(item.ped_qtd);
-        $('#ped_desc').val(item.ped_desc);
         $('#ped_dta').val(moment(item.ped_dta).format("YYYY-MM-DD"));
         
         $('#cat_pes').empty();
@@ -939,10 +1154,14 @@ function ped_edt(ped_id){
         tabela_ped_esp.init()
         tabela_ped_ent.init()
         tabela_ped_ver.init()
+        tabela_ped_prod.init()
 
         $('#aba_ped_esp').show();
         $('#aba_ped_ent').show();
         $('#aba_ped_ver').show();
+        $('#aba_ped_prod').show();
+        $('#labelToggleInputs').show();
+        $('#toggleInputs').show();
 
         $('#ped_btn_salvar').val('update');
         $('#frm_ped_modal').modal('show');
@@ -1371,6 +1590,131 @@ function ped_ver_del(ped_ver_id) {
         }
     });
 };
+
+function ped_prod_add(){
+    var url
+    if($('#ped_prod_btn_salvar').val() == 'update'){
+        url = '/obras/ped_prod_edt/'
+    }else{
+        url = '/obras/ped_prod_add/'
+    }
+
+    var frm_ped_prod = new FormData(document.getElementById('frm_ped_prod'));
+    frm_ped_prod.append('ped_id', $('#ped_id').val());
+
+    $.ajax({
+        method: 'POST',
+        url: url,
+        data: frm_ped_prod,
+        contentType: false,
+        cache: false,
+        processData: false,
+        beforeSend: function() {
+            Swal.fire({
+                title: "Carregando os dados",
+                text: "Aguarde ...",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                didOpen: function() {            
+                    Swal.showLoading();
+                }
+            })
+        },
+    })
+    .done(function(data,  textStatus, jqXHR){
+        if (jqXHR.status === 200 && jqXHR.readyState === 4){
+            $('#kt_ped_prod').DataTable().ajax.reload();
+            Swal.close();
+        }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        Swal.close();
+        console.log(jqXHR);
+        Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+    });
+}
+
+function ped_prod_edt(ped_prod_id){
+    $.getJSON('/obras/ped_prod_atb/',
+        {
+            id:ped_prod_id
+        }
+    ).done(function (item) {
+        $('#ped_prod_id').val(item.ped_prod_id);
+        $('#ped_prod_desc').val(item.ped_prod_desc);
+        $('#ped_prod_qtd').val(item.ped_prod_qtd);
+        $('#ped_prod_desc').val(item.ped_prod_desc);
+        
+        $('#cat_uni').empty();
+        var cat_uni = new Option(item.cat_uni_nome,item.cat_uni_id,true,true);
+        $('#cat_uni').append(cat_uni).trigger('change');
+
+        $('#cat_prod').empty();
+        var cat_prod = new Option(item.cat_prod_nome,item.cat_prod_id,true,true);
+        $('#cat_prod').append(cat_prod).trigger('change');
+
+        $('#ped_prod_btn_salvar').val('update');
+        $('[href="#kt_tab_pane_1"]').tab('show');
+        $('#frm_ped_prod_modal').modal('show');
+    })
+    .fail(function (jqxhr, settings, ex) {
+        exibeDialogo(result.responseText, tipoAviso.ERRO);
+    });
+}
+
+function ped_prod_del(ped_prod_id) {
+    Swal.fire({
+        title: "Deseja executar esta operação?",
+        text: "O registro " + ped_prod_id + " será removido permanentemente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ok, desejo remover!",
+        cancelButtonText: "Não, cancelar!",
+        reverseButtons: true
+    }).then(function(result) {
+        if (result.value) {
+            var dados = new FormData();
+                dados.append("csrfmiddlewaretoken", $("input[name=csrfmiddlewaretoken]").val());
+                dados.append("ped_prod_id",ped_prod_id);
+            $.ajax({
+                method: 'POST',
+                url:'/obras/ped_prod_del/',
+                data:  dados,
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend: function() {
+                    Swal.fire({
+                        title: "Operação em andamento",
+                        text: "Aguarde ...",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        didOpen: function() {            
+                            Swal.showLoading();
+                        }
+                    })
+                },
+            })
+            .done(function(data,  textStatus, jqXHR){
+                console.log(jqXHR);
+                if (jqXHR.status === 200 && jqXHR.readyState === 4){
+                    $('#kt_ped_prod').DataTable().ajax.reload();
+                    $('#frm_ped_prod_modal').modal('hide');
+                    Swal.close();
+                }
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                Swal.close();
+                Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+            });
+        }
+    });
+};
+
+
+
 function visualizar(ped_id) {
     const image = new Viewer(document.getElementById('ped_arq_path_' + ped_id));
      image.show();

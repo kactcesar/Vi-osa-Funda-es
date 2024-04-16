@@ -26,12 +26,9 @@ class Pedido(models.Model):
     ped_id = models.BigAutoField(primary_key=True)
     ped_num = models.CharField(max_length=5000)
     ult_num = models.CharField(max_length=5000)
-    ped_qtd = models.DecimalField(max_digits=10, decimal_places=2)  #
-    ped_desc = models.CharField(max_length=255)
     ped_arq_path = models.CharField(max_length=255)
     ped_dta = models.DateField()
     cat_pes = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE)
-    cat_uni = models.ForeignKey(CategoriaUnidade, on_delete=models.CASCADE)
     forn = models.ForeignKey(Fornecedor, on_delete=models.CASCADE)
     obr = models.ForeignKey(Obra, on_delete=models.CASCADE)
     usu_cad = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_cad_ped')
@@ -42,6 +39,23 @@ class Pedido(models.Model):
     class Meta:
         managed = False
         db_table = 'pedido'
+        
+        
+class PedidoProduto(models.Model):
+    ped_prod_id = models.BigAutoField(primary_key=True)
+    ped_prod_desc = models.CharField(max_length=255)
+    ped_prod_qtd = models.DecimalField(max_digits=10, decimal_places=2)
+    cat_uni = models.ForeignKey(CategoriaUnidade, on_delete=models.CASCADE)
+    cat_prod = models.ForeignKey(CategoriaProduto, on_delete=models.CASCADE)
+    ped = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    usu_cad = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_cad_pod_ped')
+    usu_alt = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_alt_pod_ped')
+    usu_cad_dta = models.DateField(auto_now_add=True)
+    usu_alt_dta = models.DateField(auto_now=True)
+
+    class Meta:
+        managed = False
+        db_table = 'pedidoproduto'
         
 class PedidoEspecificacao(models.Model):
     ped_esp_id = models.BigAutoField(primary_key=True)

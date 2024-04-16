@@ -159,12 +159,9 @@ def ped_add(request):
             item = Pedido()
             item.ped_num = novo_numero
             item.ult_num = item.ped_num
-            item.ped_qtd = request.POST['ped_qtd']
-            item.ped_desc = request.POST['ped_desc']
             item.ped_dta = datetime.strptime(request.POST['ped_dta'], '%Y-%m-%d')
             item.obr = Obra.objects.get(obr_id=request.POST['obr_id'])
             item.cat_pes = CategoriaPessoa.objects.get(pes_id=request.POST['cat_pes'])
-            item.cat_uni = CategoriaUnidade.objects.get(cat_uni_id=request.POST['cat_uni'])
             item.forn = Fornecedor.objects.get(forn_id=request.POST['forn'])
             item.usu_cad = Pessoa(pes_id = user_session(request))
             
@@ -209,12 +206,9 @@ def ped_edt(request):
         item = Pedido.objects.get(pk=request.POST['ped_id'])
         if request.method=="POST":
             item.ped_num = request.POST['ped_num']
-            item.ped_qtd = request.POST['ped_qtd']
-            item.ped_desc = request.POST['ped_desc']
             item.ped_dta = datetime.strptime(request.POST['ped_dta'], '%Y-%m-%d')
             item.obr = Obra(obr_id=request.POST['obr_id'])
             item.cat_pes = CategoriaPessoa.objects.get(cat_pes_id=request.POST['cat_pes'])
-            item.cat_pes = CategoriaUnidade.objects.get(cat_uni_id=request.POST['cat_uni'])
             item.forn = Fornecedor.objects.get(forn_id=request.POST['forn'])
             item.usu_alt = Pessoa(pes_id = user_session(request))
             item.save()
@@ -252,7 +246,7 @@ def ped_edt(request):
             'item': None,
             'aviso': 'Editado com sucesso!'},
             status=200)
-        
+
 @login_required(login_url="vicosafundacoes:my-login")   
 def ped_del(request):
     try:
@@ -280,6 +274,100 @@ def ped_del(request):
             'error': str(error),
             'aviso': 'Erro ao excluir o Pedido'
         }, status=500)
+        
+########################################################################Pedido Produto######################################################################################       
+@login_required(login_url="vicosafundacoes:my-login")   
+def ped_prod_lista(request):
+    try:
+        dados= PedidoProdutoSerializer(PedidoProduto.objects.filter(ped=request.POST['ped_id']).order_by('ped_prod_desc'), many=True)
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error,
+            'aviso': 'Problema ao consultar os dados'},
+            status=500)
+    else:
+        return JsonResponse({'dados':dados.data})
+
+@login_required(login_url="vicosafundacoes:my-login")   
+def ped_prod_atb(request):
+    try:
+        item = PedidoProdutoSerializer(PedidoProduto.objects.get(pk=request.GET['id']))
+    except (Exception, DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': error, 
+            'aviso': 'Problema ao consultar os dados'}, 
+            status=500)
+    else:
+        return JsonResponse(item.data) 
+    
+@login_required(login_url="vicosafundacoes:my-login")   
+def ped_prod_add(request):
+    try:
+        item = PedidoProduto()
+        item.ped_prod_desc = request.POST['ped_prod_desc']
+        item.ped_prod_qtd = request.POST['ped_prod_qtd']
+        item.ped_prod_desc = request.POST['ped_prod_desc']
+        item.cat_uni = CategoriaUnidade.objects.get(cat_uni_id=request.POST['cat_uni'])
+        item.cat_prod = CategoriaProduto.objects.get(cat_prod_id=request.POST['cat_prod'])
+        item.ped = Pedido(ped_id=request.POST['ped_id'])
+        item.usu_cad = Pessoa(pes_id = user_session(request))
+        item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao adicionar a Produto'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Adicionado com sucesso!'},
+            status=200)
+
+@login_required(login_url="vicosafundacoes:my-login")   
+def ped_prod_edt(request):
+    try:
+        item=PedidoProduto.objects.get(pk=request.POST['ped_prod_id'])
+        if request.method=="POST":
+            item.ped_prod_desc = request.POST['ped_prod_desc']
+            item.ped_prod_qtd = request.POST['ped_qtd']
+            item.ped_prod_desc = request.POST['ped_desc']
+            item.cat_uni = CategoriaUnidade.objects.get(cat_uni_id=request.POST['cat_uni'])
+            item.ped = Pedido(ped_id=request.POST['ped_id'])
+            item.usu_alt = Pessoa(pes_id = user_session(request))
+            item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao editar o Produto'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Editado com sucesso!'},
+            status=200)
+
+@login_required(login_url="vicosafundacoes:my-login")   
+def ped_prod_del(request):
+    try:
+        if request.method=="POST":
+            item=PedidoProduto.objects.get(pk=request.POST['ped_prod_id'])
+            item.delete()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao deletar o Produto, '},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Excluido com sucesso!'},
+            status=200) 
+        
 ##############################################################################################
 #                              Pedido Especificação                                           #
 ##############################################################################################

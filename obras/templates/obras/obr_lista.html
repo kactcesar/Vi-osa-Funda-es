@@ -106,11 +106,41 @@
                             </div>   
                         </form>
                     </div> 
-                    <div class="tab-pane fade "  id="kt_tab_pane_2" role="tabpanel" aria-labelledby="kt_tab_pane_2">
-                        <button onclick="abrir_modal_ped()"  class="btn btn-light-primary btn-icon btn-circle" >
-                            <i class="flaticon2-add-1"></i>
-                        </button>
-                        <table class="table table-head-custom table-responsive" id="kt_ped">
+                    <div class="tab-pane fade" id="kt_tab_pane_2" role="tabpanel" aria-labelledby="kt_tab_pane_2">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <button onclick="abrir_modal_ped()" class="btn btn-light-primary btn-icon btn-circle">
+                                <i class="flaticon2-add-1"></i>
+                            </button>
+                            <!-- Dropdown Button -->
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="fas fa-file-export">
+                                    </span>Exportar</button>
+                                <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                    <!--begin::Navigation-->
+                                    <ul class="navi flex-column navi-hover py-2">
+                                        <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Selecione uma Opção:</li>
+                                        <li class="navi-item">
+                                            <a href="#" class="navi-link">
+                                                <span class="navi-icon">
+                                                    <i class="la la-file-text-o"></i>
+                                                </span>
+                                                <span id="export-csv" class="navi-text">CSV</span>
+                                            </a>
+                                        </li>
+                                        <li class="navi-item">
+                                            <a href="#" class="navi-link">
+                                                <span class="navi-icon">
+                                                    <i class="la la-file-pdf-o"></i>
+                                                </span>
+                                                <span id="export-pdf" class="navi-text">PDF</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-head-custom responsive table-responsive table-checkable " id="kt_ped"style="margin-top: 13px !important;">
                             <thead>
                                 <tr>
                                     <th class="datatable-row datatable-row-even">ID</th>
@@ -118,18 +148,19 @@
                                     <th class="datatable-row datatable-row-even">Solicitante</th>
                                     <th class="datatable-row datatable-row-even">Fornecedor</th>
                                     <th class="datatable-row datatable-row-even">Cnpj</th>
-                                    <th class="datatable-row datatable-row-even">Ies</th>
+                                    <th class="datatable-row datatable-row-even">Inscrição Municipal / Estadual</th>
                                     <th class="datatable-row datatable-row-even">N° Pedido</th>
+                                    <th class="datatable-row datatable-row-even">Unidade</th>
+                                    <th class="datatable-row datatable-row-even">Produto</th>
                                     <th class="datatable-row datatable-row-even">Quantidade</th>
-                                    <th class="datatable-row datatable-row-even">Uni. Medida</th>
-                                    <th class="datatable-row datatable-row-even">Descrição</th>
                                     <th class="datatable-row datatable-row-even">Nota Fiscal</th>
                                     <th class="datatable-row datatable-row-even">Ações</th>
+                                </tr>
                             </thead>
                             <tbody>
                             </tbody>
-                        </table> 
-                    </div>                 
+                        </table>
+                    </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-text-danger btn-hover-light-danger font-weight-bold" data-dismiss="modal">Sair</button>
                         <button onclick="obr_add()"type="button" id="obr_btn_salvar" class="btn btn-text-primary btn-hover-light-primary font-weight-bold">Salvar</button>
@@ -154,13 +185,16 @@
                         <a id="aba_ped" class="nav-link active" data-toggle="tab" href="#kt_tab_pane_3">Pedido</a>
                     </li>
                     <li class="nav-item">
-                        <a id="aba_ped_esp" class="nav-link" data-toggle="tab" href="#kt_tab_pane_4">Especificação técnica</a>
+                        <a id="aba_ped_prod" class="nav-link " data-toggle="tab" href="#kt_tab_pane_4">Produtos</a>
                     </li>
                     <li class="nav-item">
-                        <a id="aba_ped_ent" class="nav-link" data-toggle="tab" href="#kt_tab_pane_5">Faturamento/ Dados Entrega</a>
+                        <a id="aba_ped_esp" class="nav-link" data-toggle="tab" href="#kt_tab_pane_5">Especificação técnica</a>
                     </li>
                     <li class="nav-item">
-                        <a id="aba_ped_ver" class="nav-link" data-toggle="tab" href="#kt_tab_pane_6">Verificação</a>
+                        <a id="aba_ped_ent" class="nav-link" data-toggle="tab" href="#kt_tab_pane_6">Faturamento/ Dados Entrega</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="aba_ped_ver" class="nav-link" data-toggle="tab" href="#kt_tab_pane_7">Verificação</a>
                     </li>
                 </ul>
                 <div class="tab-content mt-5" id="myTabContent">
@@ -182,23 +216,7 @@
                                     <select class="form-control" id="forn" name="forn"></select>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="form-group col-sm-6">
-                                    <label class="font-weight-bold" for="ped_qtd">Quantidade</label>
-                                    <input type="number" class="form-control" id="ped_qtd" name="ped_qtd" placeholder="Quantidade" required>
-                                </div>
-                                <div class="form-group col-sm-6">
-                                    <label class="font-weight-bold" for="cat_uni">Un. medida</label>
-                                    <select class="form-control" id="cat_uni" name="cat_uni"></select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-md-12">
-                                    <label for="ped_desc">Descrição</label>
-                                    <textarea class="form-control" id="ped_desc" name="ped_desc" rows="3"></textarea>
-                                </div>
-                            </div>
-                            <div class="form-group row">
+                            <div class="form-group row" style="margin-top: 20px;">
                                 <label class="col-form-label col-lg-3 col-sm-12 text-lg-right">Nota Fiscal:</label>
                                 <div class="col-lg-4 col-md-9 col-sm-12">
                                     <div class="dropzone dropzone-default dropzone-success" id="ped_arq_images">
@@ -211,8 +229,59 @@
                                 </div>
                             </div>
                         </form>
+                        <input type="checkbox" id="toggleInputs" >
+                        <label for="toggleInputs" id="labelToggleInputs">Adicionar produtos</label>
+                        <div id="specificInputs" style="display: none; border: 2px solid #ccc; padding: 20px; border-radius: 10px; position: relative;">
+                            <form method="post" id="frm_ped_prod">
+                                {% csrf_token %}
+                                <input type="hidden" id="ped_prod_id" name="ped_prod_id">
+                                <div class="row">
+                                    <div class="form-group col-sm-4">
+                                        <label class="font-weight-bold" for="cat_prod">Produto</label>
+                                        <select class="form-control" id="cat_prod" name="cat_prod"></select>
+                                    </div>
+                                    <div class="form-group col-sm-4">
+                                        <label class="font-weight-bold" for="ped_prod_qtd">Quantidade</label>
+                                        <input type="number" class="form-control" id="ped_prod_qtd" name="ped_prod_qtd" placeholder="Quantidade" required>
+                                    </div>
+                                    <div class="form-group col-sm-4">
+                                        <label class="font-weight-bold" for="cat_uni">Un. medida</label>
+                                        <select class="form-control" id="cat_uni" name="cat_uni"></select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label for="ped_prod_desc">Descrição</label>
+                                        <textarea class="form-control" id="ped_prod_desc" name="ped_prod_desc" rows="3"></textarea>
+                                    </div>
+                                    <div class="form-group col-md-6 text-right" style="position: absolute; bottom: 20px; right: 20px;">
+                                        <button type="button" class="btn btn-text-warning btn-hover-light-warning font-weight-bold" onclick="limparCampos()">Limpar</button>
+                                        <button onclick="ped_prod_add()" type="button" id="ped_prod_btn_salvar" class="btn btn-text-success btn-hover-light-success font-weight-bold">Salvar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel" aria-labelledby="aba_ped_esp">
+                    <div class="tab-pane fade" id="kt_tab_pane_4" role="tabpanel" aria-labelledby="aba_ped_prod">
+                        <button onclick="abrir_modal_ped_prod()" class="btn btn-light-primary btn-icon btn-circle" >
+                            <i class="flaticon2-add-1"></i>
+                        </button>
+                        <table class="table table-head-custom " id="kt_ped_prod">
+                            <thead>
+                                <tr>
+                                    <th class="datatable-row datatable-row-even">ID</th>
+                                    <th class="datatable-row datatable-row-even">Produto</th>
+                                    <th class="datatable-row datatable-row-even">Unidade Medida</th>
+                                    <th class="datatable-row datatable-row-even">Quantidade</th>
+                                    <th class="datatable-row datatable-row-even">Descrição</th>
+                                    <th class="datatable-row datatable-row-even">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table> 
+                    </div>
+                    <div class="tab-pane fade" id="kt_tab_pane_5" role="tabpanel" aria-labelledby="aba_ped_esp">
                         <button onclick="abrir_modal_ped_esp()" class="btn btn-light-primary btn-icon btn-circle" >
                             <i class="flaticon2-add-1"></i>
                         </button>
@@ -230,7 +299,7 @@
                             </tbody>
                         </table> 
                     </div>
-                    <div class="tab-pane fade" id="kt_tab_pane_5" role="tabpanel" aria-labelledby="aba_ped_ent">
+                    <div class="tab-pane fade" id="kt_tab_pane_6" role="tabpanel" aria-labelledby="aba_ped_ent">
                         <button onclick="abrir_modal_ped_ent()" class="btn btn-light-primary btn-icon btn-circle" >
                             <i class="flaticon2-add-1"></i>
                         </button>
@@ -256,7 +325,7 @@
                             </tbody>
                         </table> 
                     </div>
-                    <div class="tab-pane fade" id="kt_tab_pane_6" role="tabpanel" aria-labelledby="aba_ped_ver">
+                    <div class="tab-pane fade" id="kt_tab_pane_7" role="tabpanel" aria-labelledby="aba_ped_ver">
                         <button onclick="abrir_modal_ped_ver()" class="btn btn-light-primary btn-icon btn-circle" >
                             <i class="flaticon2-add-1"></i>
                         </button>
