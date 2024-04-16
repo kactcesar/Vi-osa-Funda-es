@@ -70,6 +70,7 @@ class PedidoEntrega(models.Model):
     ped_ent_cep = models.CharField(max_length=5000)
     ped_ent_obs = models.CharField(max_length=5000)
     ped = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    cat_pes = models.ForeignKey(CategoriaPessoa, on_delete=models.CASCADE)
     usu_cad = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_cad_ped_ent')
     usu_alt = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='usu_alt_ped_ent')
     usu_cad_dta = models.DateField(auto_now_add=True)

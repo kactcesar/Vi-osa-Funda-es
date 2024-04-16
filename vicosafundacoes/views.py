@@ -54,7 +54,12 @@ def register(request):
         form = CreateUserForm(request.POST)
 
         if form.is_valid():
-
+        
+            item = Pessoa()
+            item.pes_nome = request.user
+            item.pes_nome_adm = request.user
+            item.pes_adm_id = request.user.id
+            item.save()
             form.save()
 
             return redirect("vicosafundacoes:my-login")

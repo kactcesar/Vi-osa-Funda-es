@@ -234,7 +234,7 @@
                         <button onclick="abrir_modal_ped_ent()" class="btn btn-light-primary btn-icon btn-circle" >
                             <i class="flaticon2-add-1"></i>
                         </button>
-                        <table class="table table-head-custom " id="kt_ped_ent">
+                        <table class="table table-head-custom table-responsive " id="kt_ped_ent">
                             <thead>
                                 <tr>
                                     <th class="datatable-row datatable-row-even">ID</th>
@@ -247,6 +247,8 @@
                                     <th class="datatable-row datatable-row-even">Cep</th>
                                     <th class="datatable-row datatable-row-even">Obra</th>
                                     <th class="datatable-row datatable-row-even">Observação</th>
+                                    <th class="datatable-row datatable-row-even">Aprovado</th>
+                                    <th class="datatable-row datatable-row-even">Visto</th>
                                     <th class="datatable-row datatable-row-even">Ações</th>
                                 </tr>
                             </thead>
@@ -380,6 +382,12 @@
                             <input type="date" class="form-control" id="ped_ent_dta" name="ped_ent_dta"  required>
                         </div>
                     </div> 
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label class="font-weight-bold" for="cat_pes2">Aprovador por:</label>
+                            <select class="form-control" id="cat_pes2" name="cat_pes2"></select>
+                        </div>
+                    </div>    
                     <div class="row">
                         <div class="form-group col-md-12">
                             <label class="font-weight-bold" for="ped_esp_obs">Observação</label>

@@ -434,7 +434,9 @@ var tabela_ped_ent = function() {
                 {data: 'ped_ent_cidade'},
                 {data: 'ped_ent_cep'},
                 {data: 'obr_prop'},
-                {data: 'ped_ent_obs'}, 
+                {data: 'ped_ent_obs'},
+                {data: 'cat_pes_nome'},
+                {data: 'usu_cad_nome'},
                 {data: null, responsivePriority: -1},
             ],
             columnDefs: [
@@ -445,6 +447,18 @@ var tabela_ped_ent = function() {
                             return ''; // Retorna vazio se o valor for nulo
                         } else {
                             return moment(data).format("DD/MM/YYYY");
+                        }
+                    }
+                },
+                {
+                    targets: [7],
+                    render: function(data, type, row) {
+                        if (data === null) {
+                            return ''; // Retorna vazio se o valor for nulo
+                        } else {
+                            // Formata o CEP para o padrão brasileiro (XXXXX-XXX)
+                            var cep_formatado = data.substring(0, 5) + '-' + data.substring(5);
+                            return cep_formatado;
                         }
                     }
                 },
@@ -639,6 +653,7 @@ jQuery(document).ready(function() {
 
     pesq_cat_obr('#cat_obr')
     pesq_pessoa('#cat_pes')
+    pesq_pessoa('#cat_pes2')
     pesq_unidade('#cat_uni')
     pesq_forn('#forn')
 
@@ -704,6 +719,7 @@ function abrir_modal_ped_ent(){
     $('#ped_ent_cep').val('');
     $('#ped_ent_obs').val('');
     $('#ped_ent_dta').val('')
+    $('#cat_pes2').val('')
     $('#frm_ped_ent_modal').modal('show');
 }
 
@@ -923,7 +939,7 @@ function ped_edt(ped_id){
         tabela_ped_esp.init()
         tabela_ped_ent.init()
         tabela_ped_ver.init()
-        
+
         $('#aba_ped_esp').show();
         $('#aba_ped_ent').show();
         $('#aba_ped_ver').show();
@@ -1172,6 +1188,11 @@ function ped_ent_edt(ped_ent_id){
         $('#ped_ent_com').val(item.ped_ent_com);
         $('#ped_ent_cep').val(item.ped_ent_cep);
         $('#ped_ent_obs').val(item.ped_ent_obs);
+        
+        $('#cat_pes2').empty();
+        var cat_pes2 = new Option(item.pes_nome,item.pes_id,true,true);
+        $('#cat_pes2').append(cat_pes2).trigger('change');
+
         $('#ped_ent_dta').val(moment(item.ped_ent_dta).format("YYYY-MM-DD"));
         $('#ped_ent_btn_salvar').val('update');
         $('[href="#kt_tab_pane_1"]').tab('show');

@@ -77,6 +77,7 @@ def obr_edt(request):
             item.obr_loc=request.POST['obr_loc']
             item.cat_sta = CategoriaStatus(cat_sta_id = request.POST['cat_sta'])
             item.cat_obr = CategoriaObra(cat_obr_id = request.POST['cat_obr'])
+            item.usu_alt = Pessoa(pes_id = user_session(request))
             item.save()
     except(Exception,DatabaseError) as error:
         print(error)
@@ -215,6 +216,7 @@ def ped_edt(request):
             item.cat_pes = CategoriaPessoa.objects.get(cat_pes_id=request.POST['cat_pes'])
             item.cat_pes = CategoriaUnidade.objects.get(cat_uni_id=request.POST['cat_uni'])
             item.forn = Fornecedor.objects.get(forn_id=request.POST['forn'])
+            item.usu_alt = Pessoa(pes_id = user_session(request))
             item.save()
             
             # Agora que o Pedido foi salvo, podemos acessar o ped_id
@@ -338,6 +340,7 @@ def ped_esp_edt(request):
             item.ped_esp_psq = request.POST.get('ped_esp_psq') == 'on'
             item.ped_esp_fispq = request.POST.get('ped_esp_fispq') == 'on'
             item.ped = Pedido(ped_id=request.POST['ped_id'])
+            item.usu_alt = Pessoa(pes_id = user_session(request))
             item.save()
     except(Exception,DatabaseError) as error:
         print(error)
@@ -411,6 +414,7 @@ def ped_ent_add(request):
         item.ped_ent_obs = request.POST['ped_ent_obs']
         item.ped_ent_dta = datetime.strptime(request.POST['ped_ent_dta'], '%Y-%m-%d')
         item.usu_cad = Pessoa(pes_id = user_session(request))
+        item.cat_pes = CategoriaPessoa(pes_id = request.POST['cat_pes2'] )
         item.ped = Pedido(ped_id=request.POST['ped_id'])
         item.save()
     except(Exception,DatabaseError) as error:
@@ -439,6 +443,7 @@ def ped_ent_edt(request):
             item.ped_ent_obs = request.POST['ped_ent_obs']
             item.ped_ent_dta = datetime.strptime(request.POST['ped_ent_dta'], '%Y-%m-%d')
             item.ped = Pedido(ped_id=request.POST['ped_id'])
+            item.usu_alt = Pessoa(pes_id = user_session(request))
             item.save()
     except(Exception,DatabaseError) as error:
         print(error)

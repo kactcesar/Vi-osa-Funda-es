@@ -45,6 +45,11 @@ class PedidoEntregaSerializer(serializers.ModelSerializer):
     ped_num = serializers.CharField(source="ped.ped_num", read_only="True")
     obr_prop = serializers.CharField(source="ped.obr.obr_prop", read_only="True")
 
+    cat_pes_id = serializers.IntegerField(source="cat_pes.pes_id", read_only="True")
+    cat_pes_nome = serializers.CharField(source="cat_pes.pes_nome", read_only="True")
+    
+    usu_cad_id = serializers.IntegerField(source="usu_cad.usu_cad_id", read_only="True")
+    usu_cad_nome = serializers.CharField(source="usu_cad.pes_nome", read_only="True")
     
     class Meta:
         model = PedidoEntrega
