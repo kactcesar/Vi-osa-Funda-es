@@ -196,15 +196,15 @@ var tabela_ped = function() {
                 {data: 'forn_ies'},
                 {data: 'ped_num'},
                 {
-                    // Renderização personalizada para listar os nomes dos produtos relacionados
+                    // Renderização personalizada para listar os nomes das unidades dos produtos relacionados
                     data: 'pedido_produtos',
                     render: function(data) {
                         if (data.length > 0) {
                             // Se houver produtos relacionados
-                            var produtos = data.map(function(produto) {
-                                return produto.cat_uni_nome;
+                            var unidades = data.map(function(produto) {
+                                return '<li>' + produto.cat_uni_nome + '</li>'; // Cria um item de lista para cada unidade de produto
                             });
-                            return produtos.join(', '); // Retorna uma lista separada por vírgulas dos nomes dos produtos
+                            return '<ul>' + unidades.join('') + '</ul>'; // Retorna uma lista não ordenada dos nomes das unidades dos produtos
                         } else {
                             // Se não houver produtos relacionados
                             return ''; // Retorna uma string vazia
@@ -233,9 +233,9 @@ var tabela_ped = function() {
                         if (data.length > 0) {
                             // Se houver produtos relacionados
                             var quantidades = data.map(function(produto) {
-                                return produto.ped_prod_qtd;
+                                return '<li>' + produto.ped_prod_qtd + '</li>'; // Cria um item de lista para cada quantidade de produto
                             });
-                            return quantidades.join(', '); // Retorna uma lista separada por vírgulas das quantidades dos produtos
+                            return '<ul>' + quantidades.join('') + '</ul>'; // Retorna uma lista não ordenada das quantidades dos produtos
                         } else {
                             // Se não houver produtos relacionados
                             return ''; // Retorna uma string vazia
@@ -323,18 +323,31 @@ var tabela_ped = function() {
                     text: 'PDF',
                     className: 'dropdown-item',
                     exportOptions: {
-                        columns: [7, 8, 9, 10, 4, 5, 3, 2], // Índices das colunas a serem exportadas
+                        columns: [8, 9, 10, 4, 3], // Índices das colunas a serem exportadas
                         modifier: {
                             selected: true // Exporta somente linhas selecionadas
                         }
                     },
                     customize: function(doc) {
-                        // Ajuste o layout do PDF aqui
-                        doc.pageMargins = [10, 30, 20, 30]; // Margens esquerda, superior, direita, inferior
-                        doc.defaultStyle.fontSize = 10; // Tamanho da fonte padrão
-                        doc.styles.tableHeader.fontSize = 12; // Tamanho da fonte do cabeçalho da tabela
-                        doc.styles.title.fontSize = 14; // Tamanho da fonte do título (se houver)
-                        
+                        // Verificar se doc.page está definido
+                        if (doc.page) {
+                            // Ajuste o layout do PDF aqui
+                            doc.pageMargins = [20, 60, 40, 60]; // Margens esquerda, superior, direita, inferior
+                            doc.defaultStyle.fontSize = 10; // Tamanho da fonte padrão
+                            doc.styles.tableHeader.fontSize = 12; // Tamanho da fonte do cabeçalho da tabela
+                            doc.styles.title.fontSize = 14; // Tamanho da fonte do título (se houver)
+                
+                            // Calcula o espaço disponível para as colunas
+                            var larguraDisponivel = (doc.page.width - doc.pageMargins[1] - doc.pageMargins[3]) / 5; // Dividido por 5 pois há 5 colunas
+                
+                            // Define as larguras das colunas
+                            var largurasColunas = [];
+                            for (var i = 0; i < 5; i++) {
+                                largurasColunas.push('*'); // Define todas as colunas para ajustar automaticamente
+                            }
+                            doc.content[1].table.widths = largurasColunas;
+                        }
+                
                         // Função para processar células com listas HTML
                         var processarListaHTML = function(value) {
                             var wrapper = document.createElement('div');
@@ -383,7 +396,7 @@ var tabela_ped = function() {
                                         text: ['Página ', { text: page.toString() }, ' de ', { text: pages.toString() }]
                                     }
                                 ],
-                                margin: [10, 0]
+                                margin: [40, 0]
                             };
                         };
                     }
