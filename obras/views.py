@@ -305,13 +305,15 @@ def ped_prod_atb(request):
 @login_required(login_url="vicosafundacoes:my-login")   
 def ped_prod_add(request):
     try:
+        ultimo_pedido = Pedido.objects.all().aggregate(Max('ped_id'))
+        ultimo_ped_id = ultimo_pedido['ped_id__max']
         item = PedidoProduto()
         item.ped_prod_desc = request.POST['ped_prod_desc']
         item.ped_prod_qtd = request.POST['ped_prod_qtd']
         item.ped_prod_desc = request.POST['ped_prod_desc']
         item.cat_uni = CategoriaUnidade.objects.get(cat_uni_id=request.POST['cat_uni'])
         item.cat_prod = CategoriaProduto.objects.get(cat_prod_id=request.POST['cat_prod'])
-        item.ped = Pedido(ped_id=request.POST['ped_id'])
+        item.ped_id =ultimo_ped_id
         item.usu_cad = Pessoa(pes_id = user_session(request))
         item.save()
     except(Exception,DatabaseError) as error:

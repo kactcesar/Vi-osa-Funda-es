@@ -153,7 +153,7 @@ var tabela_ped = function() {
             responsive: true,
             processing: true,
             pageLength: 10,
-            paging: false,
+            paging: false,        
             language: {
                 processing:     "Processamento em andamento...",
                 search:         "Pesquisar:",
@@ -187,6 +187,7 @@ var tabela_ped = function() {
             },
             order: [[ 0, 'asc' ]],
             columns: [
+                {data: null,responsivePriority:0},
                 {data: 'ped_id'},
                 {data: 'ped_dta'},
                 {data: 'pes_nome'},
@@ -247,7 +248,15 @@ var tabela_ped = function() {
             ],
             columnDefs: [
                 {
-                    targets: [1],
+                    targets: [0],
+                    orderable: false,
+                    className: 'checkble',
+                    render: function(data, type, row) {
+                        return '<input type="checkbox" class="checkble">';
+                    }
+              },
+                {
+                    targets: [2],
                     render: function(data, type, row) {
                         if (data === null) {
                             return ''; // Retorna vazio se o valor for nulo
@@ -257,7 +266,7 @@ var tabela_ped = function() {
                     }
                 },
                 {
-                    targets: [8],
+                    targets: [11],
                     className: 'text-center',
                     orderable: false,
                     render: function(data, type, row) {
@@ -304,7 +313,7 @@ var tabela_ped = function() {
                     text: 'CSV',
                     className: 'dropdown-item',
                     exportOptions: {
-                        columns: [6, 7, 8, 9, 3, 2, 1, 4] // Índices das colunas a serem exportadas
+                        columns: [7, 8, 9, 10, 4, 3, 2, 5] // Índices das colunas a serem exportadas
                     },
                 },
                 {
@@ -312,7 +321,7 @@ var tabela_ped = function() {
                     text: 'PDF',
                     className: 'dropdown-item',
                     exportOptions: {
-                        columns: [6, 7, 8, 9, 3, 2, 1, 4] // Índices das colunas a serem exportadas
+                        columns: [7, 8, 9, 10, 4, 3, 2, 5] // Índices das colunas a serem exportadas
                     },
                     customize: function(doc) {
                         // Ajuste o layout do PDF aqui
@@ -321,6 +330,27 @@ var tabela_ped = function() {
                         doc.styles.tableHeader.fontSize = 12; // Tamanho da fonte do cabeçalho da tabela
                         doc.styles.title.fontSize = 14; // Tamanho da fonte do título (se houver)
                         // etc.
+                        doc.content.splice(0, 0, {
+                            text: 'Solicitação de Pedidos', 
+                            style: 'header',
+                            alignment: 'center',
+                            margin: [0, 0, 0, 10] 
+                        });
+                        doc['footer'] = (function(page, pages) {
+                            return {
+                                columns: [
+                                    { 
+                                        alignment: 'left',
+                                        text: ['Data: ', { text: new Date().toLocaleDateString() }]
+                                    },
+                                    { 
+                                        alignment: 'right',
+                                        text: ['Página ', { text: page.toString() }, ' de ', { text: pages.toString() }]
+                                    }
+                                ],
+                                margin: [10, 0]
+                            }
+                        });
                     }
                 }
             ]
@@ -336,7 +366,10 @@ var tabela_ped = function() {
 
         $('#export-pdf').click(function() {
             table.DataTable().button('.buttons-pdf').trigger();
+            
         });
+        
+        
     };
 
     return {
@@ -861,13 +894,22 @@ jQuery(document).ready(function() {
                     specificInputs.hide();
                 }
             });
+                
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+        $($.fn.dataTable.tables(true)).DataTable()
+            .columns.adjust();
+        });
+
+    var table = $('#kt_ped').DataTable();
+        $('#kt_ped').on('change', 'input.checkble:first', function() {
+            var isChecked = $(this).prop('checked');
+            // Marca ou desmarca todos os checkboxes nas linhas com base no estado do checkbox "selecionar tudo"
+            $('#kt_ped tbody').find('input.checkble').prop('checked', isChecked);
+        });
+
         
-$('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
-$($.fn.dataTable.tables(true)).DataTable()
-    .columns.adjust();
 });
 
-});
 
 function limparCampos() {
     // Limpar os valores dos campos usando jQuery
@@ -1122,6 +1164,8 @@ function ped_add() {
             $('#aba_ped_prod').show();
             $('#toggleInputs').show();
             $('#labelToggleInputs').show();
+            tabela_ped_prod.init()
+            $('#kt_ped_prod').DataTable().ajax.reload();
             Swal.close();
         }
     })
@@ -1625,6 +1669,7 @@ function ped_prod_add(){
     .done(function(data,  textStatus, jqXHR){
         if (jqXHR.status === 200 && jqXHR.readyState === 4){
             $('#kt_ped_prod').DataTable().ajax.reload();
+            $('#kt_ped').DataTable().ajax.reload();
             Swal.close();
         }
     })
