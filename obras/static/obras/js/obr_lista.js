@@ -196,30 +196,15 @@ var tabela_ped = function() {
                 {data: 'forn_ies'},
                 {data: 'ped_num'},
                 {
-                    // Renderização personalizada para listar os nomes das unidades dos produtos relacionados
-                    data: 'pedido_produtos',
-                    render: function(data) {
-                        if (data.length > 0) {
-                            // Se houver produtos relacionados
-                            var unidades = data.map(function(produto) {
-                                return '<li>' + produto.cat_uni_nome + '</li>'; // Cria um item de lista para cada unidade de produto
-                            });
-                            return '<ul>' + unidades.join('') + '</ul>'; // Retorna uma lista não ordenada dos nomes das unidades dos produtos
-                        } else {
-                            // Se não houver produtos relacionados
-                            return ''; // Retorna uma string vazia
-                        }
-                    }
-                },
-                {
+                    // Renderização personalizada para listar os nomes dos produtos relacionados
                     data: 'pedido_produtos',
                     render: function(data) {
                         if (data.length > 0) {
                             // Se houver produtos relacionados
                             var produtos = data.map(function(produto) {
-                                return '<li>' + produto.cat_prod_nome + '</li>'; // Cria um item de lista para cada produto
+                                return produto.cat_prod_nome; // Obter apenas o nome do produto
                             });
-                            return '<ul>' + produtos.join('') + '</ul>'; // Retorna uma lista não ordenada dos nomes dos produtos
+                            return produtos.join(' | '); // Retorna os nomes dos produtos separados por vírgulas
                         } else {
                             // Se não houver produtos relacionados
                             return ''; // Retorna uma string vazia
@@ -233,9 +218,25 @@ var tabela_ped = function() {
                         if (data.length > 0) {
                             // Se houver produtos relacionados
                             var quantidades = data.map(function(produto) {
-                                return '<li>' + produto.ped_prod_qtd + '</li>'; // Cria um item de lista para cada quantidade de produto
+                                return produto.ped_prod_qtd; // Obter apenas a quantidade do produto
                             });
-                            return '<ul>' + quantidades.join('') + '</ul>'; // Retorna uma lista não ordenada das quantidades dos produtos
+                            return quantidades.join(' | '); // Retorna as quantidades dos produtos separadas por vírgulas
+                        } else {
+                            // Se não houver produtos relacionados
+                            return ''; // Retorna uma string vazia
+                        }
+                    }
+                },
+                {
+                    // Renderização personalizada para listar os nomes dos produtos relacionados
+                    data: 'pedido_produtos',
+                    render: function(data) {
+                        if (data.length > 0) {
+                            // Se houver produtos relacionados
+                            var produtos = data.map(function(produto) {
+                                return produto.cat_uni_nome;
+                            });
+                            return produtos.join(' | '); // Retorna uma lista separada por vírgulas dos nomes dos produtos
                         } else {
                             // Se não houver produtos relacionados
                             return ''; // Retorna uma string vazia
