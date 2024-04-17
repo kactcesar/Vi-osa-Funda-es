@@ -337,7 +337,9 @@ var tabela_ped = function() {
                             doc.defaultStyle.fontSize = 10; // Tamanho da fonte padrão
                             doc.styles.tableHeader.fontSize = 12; // Tamanho da fonte do cabeçalho da tabela
                             doc.styles.title.fontSize = 14; // Tamanho da fonte do título (se houver)
-                
+                            
+                            var logoURL = '/static/assets/media/logos/vf.png'; // Substitua pela URL completa da imagem estática
+                            doc.addImage(logoURL, 'PNG', 0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight());
                             // Calcula o espaço disponível para as colunas
                             var larguraDisponivel = (doc.page.width - doc.pageMargins[1] - doc.pageMargins[3]) / 5; // Dividido por 5 pois há 5 colunas
                 

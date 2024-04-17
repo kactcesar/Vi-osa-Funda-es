@@ -205,10 +205,9 @@ def ped_edt(request):
     try:
         item = Pedido.objects.get(pk=request.POST['ped_id'])
         if request.method=="POST":
-            item.ped_num = request.POST['ped_num']
             item.ped_dta = datetime.strptime(request.POST['ped_dta'], '%Y-%m-%d')
             item.obr = Obra(obr_id=request.POST['obr_id'])
-            item.cat_pes = CategoriaPessoa.objects.get(cat_pes_id=request.POST['cat_pes'])
+            item.cat_pes = CategoriaPessoa(pes_id = request.POST['cat_pes'])
             item.forn = Fornecedor.objects.get(forn_id=request.POST['forn'])
             item.usu_alt = Pessoa(pes_id = user_session(request))
             item.save()
