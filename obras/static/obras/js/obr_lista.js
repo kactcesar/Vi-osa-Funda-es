@@ -131,9 +131,8 @@ var tab_obr = function() {
 
 var tabela_ped = function() {
     var kt_ped = function() {
-        
         var table = $('#kt_ped');
-        
+
         // Destrói a instância existente do DataTable, se houver
         if ($.fn.DataTable.isDataTable('#kt_ped')) {
             table.DataTable().destroy();
@@ -143,7 +142,7 @@ var tabela_ped = function() {
         table.on('processing.dt', function (e, settings, processing) {
             if (processing) {
                 Toast.fire({
-                    icon: 'success',
+                    icon: 'primary',
                     title: 'Sucesso! Carregando os dados ...'
                 });
             } else {
@@ -153,14 +152,15 @@ var tabela_ped = function() {
             responsive: true,
             processing: true,
             pageLength: 10,
-            paging: false,        
+            paging: false,
+            select: true,        
             language: {
                 processing:     "Processamento em andamento...",
                 search:         "Pesquisar:",
                 lengthMenu:     "MENU registros por página",
-                info:           "Mostrando de START até END de TOTAL registros",
+                info:           "Mostrando de _START_ até _END_ de _TOTAL_ registros",
                 infoEmpty:      "Mostrando 0 até 0 de 0 registros",
-                infoFiltered:   "(Filtrados de MAX registros)",
+                infoFiltered:   "(Filtrados de _MAX_ registros)",
                 infoPostFix:    "",
                 loadingRecords: "Carregando registros...",
                 zeroRecords:    "Nenhum registro encontrado",
@@ -212,15 +212,14 @@ var tabela_ped = function() {
                     }
                 },
                 {
-                    // Renderização personalizada para listar os nomes dos produtos relacionados
                     data: 'pedido_produtos',
                     render: function(data) {
                         if (data.length > 0) {
                             // Se houver produtos relacionados
                             var produtos = data.map(function(produto) {
-                                return produto.cat_prod_nome;
+                                return '<li>' + produto.cat_prod_nome + '</li>'; // Cria um item de lista para cada produto
                             });
-                            return produtos.join(', '); // Retorna uma lista separada por vírgulas dos nomes dos produtos
+                            return '<ul>' + produtos.join('') + '</ul>'; // Retorna uma lista não ordenada dos nomes dos produtos
                         } else {
                             // Se não houver produtos relacionados
                             return ''; // Retorna uma string vazia
@@ -254,7 +253,7 @@ var tabela_ped = function() {
                     render: function(data, type, row) {
                         return '<input type="checkbox" class="checkble">';
                     }
-              },
+                },
                 {
                     targets: [2],
                     render: function(data, type, row) {
@@ -293,7 +292,7 @@ var tabela_ped = function() {
                     orderable: false,
                     render: function(data, type, row) {
                         return '\
-                            <button type="button" onclick="ped_edt(' + row.ped_id + ')" class="btn btn-light-success btn-icon btn-circle"\
+                            <button type="button" onclick="ped_edt(' + row.ped_id + ')" class="btn btn-light-primary btn-icon btn-circle"\
                                 data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
                                 <i class="flaticon-edit"></i>\
                             </button> \
@@ -313,15 +312,21 @@ var tabela_ped = function() {
                     text: 'CSV',
                     className: 'dropdown-item',
                     exportOptions: {
-                        columns: [7, 8, 9, 10, 4, 3, 2, 5] // Índices das colunas a serem exportadas
-                    },
+                        columns: [7, 8, 9, 10, 4, 3, 2, 5], // Índices das colunas a serem exportadas
+                        modifier: {
+                            selected: true // Exporta somente linhas selecionadas
+                        }
+                    }
                 },
                 {
                     extend: 'pdfHtml5',
                     text: 'PDF',
                     className: 'dropdown-item',
                     exportOptions: {
-                        columns: [7, 8, 9, 10, 4, 3, 2, 5] // Índices das colunas a serem exportadas
+                        columns: [7, 8, 9, 10, 4, 5, 3, 2], // Índices das colunas a serem exportadas
+                        modifier: {
+                            selected: true // Exporta somente linhas selecionadas
+                        }
                     },
                     customize: function(doc) {
                         // Ajuste o layout do PDF aqui
@@ -329,30 +334,61 @@ var tabela_ped = function() {
                         doc.defaultStyle.fontSize = 10; // Tamanho da fonte padrão
                         doc.styles.tableHeader.fontSize = 12; // Tamanho da fonte do cabeçalho da tabela
                         doc.styles.title.fontSize = 14; // Tamanho da fonte do título (se houver)
-                        // etc.
+                        
+                        // Função para processar células com listas HTML
+                        var processarListaHTML = function(value) {
+                            var wrapper = document.createElement('div');
+                            wrapper.innerHTML = value;
+                            var ul = wrapper.querySelector('ul');
+                            if (ul) {
+                                var items = ul.querySelectorAll('li');
+                                var formattedList = [];
+                                items.forEach(function(item) {
+                                    formattedList.push(item.textContent);
+                                });
+                                return formattedList.join('\n'); // Retorne a lista como uma string separada por quebras de linha
+                            }
+                            return value; // Se não for uma lista HTML, retorne o valor original
+                        };
+                
+                        // Processar as células da coluna 'pedido_produtos' para exportação
+                        doc.content.forEach(function(row) {
+                            if (typeof row.table !== 'undefined' && row.table.body.length > 0) {
+                                row.table.body.forEach(function(cell) {
+                                    if (cell.length > 0 && typeof cell[0].text === 'string' && cell[0].text.includes('<ul>')) {
+                                        cell[0].text = processarListaHTML(cell[0].text);
+                                    }
+                                });
+                            }
+                        });
+                
+                        // Adicionar cabeçalho personalizado
                         doc.content.splice(0, 0, {
-                            text: 'Solicitação de Pedidos', 
+                            text: 'Solicitação de Pedido',
                             style: 'header',
                             alignment: 'center',
-                            margin: [0, 0, 0, 10] 
+                            margin: [0, 0, 0, 10]
                         });
-                        doc['footer'] = (function(page, pages) {
+                
+                        // Adicionar rodapé personalizado
+                        doc['footer'] = function(page, pages) {
                             return {
                                 columns: [
-                                    { 
+                                    {
                                         alignment: 'left',
                                         text: ['Data: ', { text: new Date().toLocaleDateString() }]
                                     },
-                                    { 
+                                    {
                                         alignment: 'right',
                                         text: ['Página ', { text: page.toString() }, ' de ', { text: pages.toString() }]
                                     }
                                 ],
                                 margin: [10, 0]
-                            }
-                        });
+                            };
+                        };
                     }
                 }
+                
             ]
         });  
 
@@ -366,10 +402,14 @@ var tabela_ped = function() {
 
         $('#export-pdf').click(function() {
             table.DataTable().button('.buttons-pdf').trigger();
-            
         });
-        
-        
+
+        // Função para selecionar todas as linhas
+        table.on('change', 'input.checkble:first', function() {
+            var isChecked = $(this).prop('checked');
+            // Marca ou desmarca todos os checkboxes nas linhas com base no estado do checkbox "selecionar tudo"
+            $('#kt_ped tbody').find('input.checkble').prop('checked', isChecked);
+        });
     };
 
     return {
@@ -379,6 +419,7 @@ var tabela_ped = function() {
         },
     };
 }();
+
 
 
 var tabela_ped_esp = function() {
@@ -395,7 +436,7 @@ var tabela_ped_esp = function() {
         table.on('processing.dt', function (e, settings, processing) {
             if (processing) {
                 Toast.fire({
-                    icon: 'success',
+                    icon: 'primary',
                     title: 'Sucesso! Carregando os dados ...'
                 });
             } else {
@@ -462,7 +503,7 @@ var tabela_ped_esp = function() {
                     orderable: false,
                     render: function(data, type, row) {
                         return '\
-                            <button type="button" onclick="ped_esp_edt(' + row.ped_esp_id + ')" class="btn btn-light-success btn-icon btn-circle"\
+                            <button type="button" onclick="ped_esp_edt(' + row.ped_esp_id + ')" class="btn btn-light-primary btn-icon btn-circle"\
                                 data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
                                 <i class="flaticon-edit"></i>\
                             </button> \
@@ -485,99 +526,6 @@ var tabela_ped_esp = function() {
     };
 }();
 
-var tabela_ped_prod = function() {
-    var kt_ped_prod = function() {
-        
-        var table = $('#kt_ped_prod');
-        
-        // Destrói a instância existente do DataTable, se houver
-        if ($.fn.DataTable.isDataTable('#kt_ped_prod')) {
-            table.DataTable().destroy();
-        }
-
-        // Inicializa o DataTable novamente com as novas configurações
-        table.on('processing.dt', function (e, settings, processing) {
-            if (processing) {
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Sucesso! Carregando os dados ...'
-                });
-            } else {
-                Toast.close();
-            }
-        }).DataTable({
-            responsive: true,
-            processing: true,
-            pageLength: 10,
-            paging: false,
-            language: {
-                processing:     "Processamento em andamento...",
-                search:         "Pesquisar:",
-                lengthMenu:     "MENU registros por página",
-                info:           "Mostrando de START até END de TOTAL registros",
-                infoEmpty:      "Mostrando 0 até 0 de 0 registros",
-                infoFiltered:   "(Filtrados de MAX registros)",
-                infoPostFix:    "",
-                loadingRecords: "Carregando registros...",
-                zeroRecords:    "Nenhum registro encontrado",
-                emptyTable:     "Nenhum registro encontrado",
-                paginate: {
-                    first:      "Primeiro",
-                    previous:   "Anterior",
-                    next:       "Avançar",
-                    last:       "Último"
-                },
-                aria: {
-                    sortAscending:  ": Ordenar coluna por ordem crescente",
-                    sortDescending: ": Ordenar coluna por ordem decrescente"
-                }
-            },
-            ajax: {
-                url: '/obras/ped_prod_lista/',
-                type: 'POST',
-                dataSrc: 'dados',
-                data: function(d) {
-                    d.csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
-                    d.ped_id = $("#ped_id").val();
-                },
-            },
-            order: [[ 0, 'asc' ]],
-            columns: [
-                {data: 'ped_prod_id'},
-                {data: 'cat_prod_nome'},
-                {data: 'cat_uni_nome'},
-                {data: 'ped_prod_qtd'},
-                {data: 'ped_prod_desc'},
-                {data: null, responsivePriority: -1},
-            ],
-            columnDefs: [
-                {
-                    targets: [-1],
-                    orderable: false,
-                    render: function(data, type, row) {
-                        return '\
-                            <button type="button" onclick="ped_prod_edt(' + row.ped_prod_id + ')" class="btn btn-light-success btn-icon btn-circle"\
-                                data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
-                                <i class="flaticon-edit"></i>\
-                            </button> \
-                            <button type="button" onclick="ped_prod_del(' + row.ped_prod_id + ')" class="btn btn-light-danger btn-icon btn-circle"\
-                                data-toggle="tooltip" data-placement="bottom" title="Remover">\
-                                <i class="flaticon-delete"></i>\
-                            </button>\
-                        ';
-                    },
-                },
-            ],
-        });  
-    };
-
-    return {
-        //main function to initiate the module
-        init: function() {
-            kt_ped_prod();
-        },
-    };
-}();
 
 var tabela_ped_ent = function() {
     var kt_ped_ent = function() {
@@ -593,7 +541,7 @@ var tabela_ped_ent = function() {
         table.on('processing.dt', function (e, settings, processing) {
             if (processing) {
                 Toast.fire({
-                    icon: 'success',
+                    icon: 'primary',
                     title: 'Sucesso! Carregando os dados ...'
                 });
             } else {
@@ -679,7 +627,7 @@ var tabela_ped_ent = function() {
                     orderable: false,
                     render: function(data, type, row) {
                         return '\
-                            <button type="button" onclick="ped_ent_edt(' + row.ped_ent_id + ')" class="btn btn-light-success btn-icon btn-circle"\
+                            <button type="button" onclick="ped_ent_edt(' + row.ped_ent_id + ')" class="btn btn-light-primary btn-icon btn-circle"\
                                 data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
                                 <i class="flaticon-edit"></i>\
                             </button> \
@@ -702,6 +650,103 @@ var tabela_ped_ent = function() {
     };
 }();
 
+
+var tabela_ped_prod = function() {
+    var kt_ped_prod = function() {
+        
+        var table = $('#kt_ped_prod');
+        
+        // Destrói a instância existente do DataTable, se houver
+        if ($.fn.DataTable.isDataTable('#kt_ped_prod')) {
+            table.DataTable().destroy();
+        }
+
+        // Inicializa o DataTable novamente com as novas configurações
+        table.on('processing.dt', function (e, settings, processing) {
+            if (processing) {
+                Toast.fire({
+                    icon: 'primary',
+                    title: 'Sucesso! Carregando os dados ...'
+                });
+            } else {
+                Toast.close();
+            }
+        }).DataTable({
+            responsive: true,
+            processing: true,
+            pageLength: 10,
+            paging: false,
+            language: {
+                processing:     "Processamento em andamento...",
+                search:         "Pesquisar:",
+                lengthMenu:     "MENU registros por página",
+                info:           "Mostrando de START até END de TOTAL registros",
+                infoEmpty:      "Mostrando 0 até 0 de 0 registros",
+                infoFiltered:   "(Filtrados de MAX registros)",
+                infoPostFix:    "",
+                loadingRecords: "Carregando registros...",
+                zeroRecords:    "Nenhum registro encontrado",
+                emptyTable:     "Nenhum registro encontrado",
+                paginate: {
+                    first:      "Primeiro",
+                    previous:   "Anterior",
+                    next:       "Avançar",
+                    last:       "Último"
+                },
+                aria: {
+                    sortAscending:  ": Ordenar coluna por ordem crescente",
+                    sortDescending: ": Ordenar coluna por ordem decrescente"
+                }
+            },
+            ajax: {
+                url: '/obras/ped_prod_lista/',
+                type: 'POST',
+                dataSrc: 'dados',
+                data: function(d) {
+                    d.csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val();
+                    d.ped_id = $("#ped_id").val();
+                },
+            },
+            order: [[ 0, 'asc' ]],
+            columns: [
+                {data: 'ped_prod_id'},
+                {data: 'cat_prod_nome'},
+                {data: 'cat_uni_nome'},
+                {data: 'ped_prod_qtd'},
+                {data: 'ped_prod_desc'},
+                {data: null, responsivePriority: -1},
+            ],
+            columnDefs: [
+                {
+                    targets: [-1],
+                    orderable: false,
+                    render: function(data, type, row) {
+                        return '\
+                            <button type="button" onclick="ped_prod_edt(' + row.ped_prod_id + ')" class="btn btn-light-primary btn-icon btn-circle"\
+                                data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
+                                <i class="flaticon-edit"></i>\
+                            </button> \
+                            <button type="button" onclick="ped_prod_del(' + row.ped_prod_id + ')" class="btn btn-light-danger btn-icon btn-circle"\
+                                data-toggle="tooltip" data-placement="bottom" title="Remover">\
+                                <i class="flaticon-delete"></i>\
+                            </button>\
+                        ';
+                    },
+                },
+            ],
+        });  
+    };
+    return {
+        //main function to initiate the module
+        init: function() {
+            kt_ped_prod();
+        },
+    };
+}();
+
+
+
+
 var tabela_ped_ver = function() {
     var kt_ped_ver = function() {
         
@@ -716,7 +761,7 @@ var tabela_ped_ver = function() {
         table.on('processing.dt', function (e, settings, processing) {
             if (processing) {
                 Toast.fire({
-                    icon: 'success',
+                    icon: 'primary',
                     title: 'Sucesso! Carregando os dados ...'
                 });
             } else {
@@ -785,7 +830,7 @@ var tabela_ped_ver = function() {
                     orderable: false,
                     render: function(data, type, row) {
                         return '\
-                            <button type="button" onclick="ped_ver_edt(' + row.ped_ver_id + ')" class="btn btn-light-success btn-icon btn-circle"\
+                            <button type="button" onclick="ped_ver_edt(' + row.ped_ver_id + ')" class="btn btn-light-primary btn-icon btn-circle"\
                                 data-toggle="tooltip" data-placement="bottom" value="update" title="Editar">\
                                 <i class="flaticon-edit"></i>\
                             </button> \
@@ -833,13 +878,13 @@ var KTDropzonePedidoArquivo = function() {
                     }
                 });
                 
-                this.on("success", function(files, response) {
+                this.on("primary", function(files, response) {
                     // A resposta já é um objeto JSON, não é necessário fazer parse
                     // Atualiza o src da imagem com o caminho do arquivo, se houver
                     if (response.item) {
                         $("#ped_arq_path").attr("src", response.item.ped_arq_path);
                     }
-                    Swal.fire("Deu tudo certo!", response.aviso, "success");
+                    Swal.fire("Deu tudo certo!", response.aviso, "primary");
                     this.removeAllFiles(); // Remove todos os arquivos após o upload
                     $('#frm_ped_modal').modal('hide');
                 });
@@ -868,6 +913,9 @@ jQuery(document).ready(function() {
     pesq_pessoa('#cat_pes2')
     pesq_unidade('#cat_uni')
     pesq_produto('#cat_prod')
+
+    pesq_unidade('#cat_uni2')
+    pesq_produto('#cat_prod2')
 
     pesq_forn('#forn')
 
@@ -900,12 +948,7 @@ jQuery(document).ready(function() {
             .columns.adjust();
         });
 
-    var table = $('#kt_ped').DataTable();
-        $('#kt_ped').on('change', 'input.checkble:first', function() {
-            var isChecked = $(this).prop('checked');
-            // Marca ou desmarca todos os checkboxes nas linhas com base no estado do checkbox "selecionar tudo"
-            $('#kt_ped tbody').find('input.checkble').prop('checked', isChecked);
-        });
+    
 
         
 });
@@ -1679,6 +1722,58 @@ function ped_prod_add(){
         Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
     });
 }
+
+
+
+function ped_prod_add_2(){
+    var url
+    if($('#ped_prod_btn_salvar').val() == 'update'){
+        url = '/obras/ped_prod_edt/'
+    }else{
+        url = '/obras/ped_prod_add_2/'
+    }
+
+    var frm_ped_prod_2 = new FormData(document.getElementById('frm_ped_prod_2'));
+    frm_ped_prod_2.append('ped_id', $('#ped_id').val());
+
+    $.ajax({
+        method: 'POST',
+        url: url,
+        data: frm_ped_prod_2,
+        contentType: false,
+        cache: false,
+        processData: false,
+        beforeSend: function() {
+            Swal.fire({
+                title: "Carregando os dados",
+                text: "Aguarde ...",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                didOpen: function() {            
+                    Swal.showLoading();
+                }
+            })
+        },
+    })
+    .done(function(data,  textStatus, jqXHR){
+        if (jqXHR.status === 200 && jqXHR.readyState === 4){
+            $('#kt_ped_prod').DataTable().ajax.reload();
+            $('#kt_ped').DataTable().ajax.reload();
+            $('#frm_ped_prod_modal').modal('hide');
+            Swal.close();
+        }
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        Swal.close();
+        console.log(jqXHR);
+        Swal.fire("Ops! Algo deu errado!", jqXHR.responseJSON.aviso, "error");
+    });
+}
+
+
+
+
 
 function ped_prod_edt(ped_prod_id){
     $.getJSON('/obras/ped_prod_atb/',

@@ -328,6 +328,31 @@ def ped_prod_add(request):
             'aviso': 'Adicionado com sucesso!'},
             status=200)
 
+
+@login_required(login_url="vicosafundacoes:my-login")   
+def ped_prod_add_2(request):
+    try:
+        item = PedidoProduto()
+        item.ped_prod_desc = request.POST['ped_prod_desc']
+        item.ped_prod_qtd = request.POST['ped_prod_qtd']
+        item.ped_prod_desc = request.POST['ped_prod_desc']
+        item.cat_uni = CategoriaUnidade.objects.get(cat_uni_id=request.POST['cat_uni2'])
+        item.cat_prod = CategoriaProduto.objects.get(cat_prod_id=request.POST['cat_prod2'])
+        item.ped = Pedido(ped_id=request.POST['ped_id'])
+        item.usu_cad = Pessoa(pes_id = user_session(request))
+        item.save()
+    except(Exception,DatabaseError) as error:
+        print(error)
+        return JsonResponse({
+            'error': str(error),
+            'aviso': 'Erro ao adicionar a Especificação'},
+            status=500)
+    else:
+        return JsonResponse({
+            'item': None,
+            'aviso': 'Adicionado com sucesso!'},
+            status=200)
+
 @login_required(login_url="vicosafundacoes:my-login")   
 def ped_prod_edt(request):
     try:
