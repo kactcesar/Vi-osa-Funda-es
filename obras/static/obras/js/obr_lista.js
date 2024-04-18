@@ -627,18 +627,6 @@ var tabela_ped_ent = function() {
                     }
                 },
                 {
-                    targets: [7],
-                    render: function(data, type, row) {
-                        if (data === null) {
-                            return ''; // Retorna vazio se o valor for nulo
-                        } else {
-                            // Formata o CEP para o padrão brasileiro (XXXXX-XXX)
-                            var cep_formatado = data.substring(0, 5) + '-' + data.substring(5);
-                            return cep_formatado;
-                        }
-                    }
-                },
-                {
                     targets: [-1],
                     orderable: false,
                     render: function(data, type, row) {
@@ -759,8 +747,6 @@ var tabela_ped_prod = function() {
         },
     };
 }();
-
-
 
 
 var tabela_ped_ver = function() {
@@ -932,8 +918,10 @@ jQuery(document).ready(function() {
 
     pesq_unidade('#cat_uni2')
     pesq_produto('#cat_prod2')
-
     pesq_forn('#forn')
+
+    $('#ped_ent_cep').mask('00000-000');
+
 
     $('input[type=radio][name=ped_ver_chk_radio]').change(function() {
         $('#ped_ver_chk').val(this.value);

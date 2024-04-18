@@ -636,13 +636,22 @@ def ped_ver_add(request):
             novo_numero_sequencial = "N°" + str(numero_sequencial + 1)
 
         item = PedidoVerificacao()
-        item.ped_ver_chk = request.POST.get('ped_ver_chk') == 'true'
-        item.ped_ver_rnc_num = novo_numero_sequencial
-        item.ped_ver_desc = request.POST['ped_ver_desc']
-        item.ped_ver_sol = request.POST['ped_ver_sol']
-        item.ped = Pedido(ped_id=request.POST['ped_id'])
-        item.usu_cad = Pessoa(pes_id = user_session(request))
-        item.save()
+        
+        if request.POST.get('ped_ver_chk') == 'true':
+            item.ped_ver_chk = True
+            item.ped_ver_desc = request.POST['ped_ver_desc']
+            item.ped_ver_sol = request.POST['ped_ver_sol']
+            item.ped = Pedido(ped_id=request.POST['ped_id'])
+            item.usu_cad = Pessoa(pes_id = user_session(request))
+            item.save()
+        else:
+            item.ped_ver_chk = False
+            item.ped_ver_rnc_num = novo_numero_sequencial
+            item.ped_ver_desc = request.POST['ped_ver_desc']
+            item.ped_ver_sol = request.POST['ped_ver_sol']
+            item.ped = Pedido(ped_id=request.POST['ped_id'])
+            item.usu_cad = Pessoa(pes_id = user_session(request))
+            item.save()
     except (Exception, DatabaseError) as error:
         print(error)
         return JsonResponse({
