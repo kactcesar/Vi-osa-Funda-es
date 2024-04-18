@@ -949,16 +949,25 @@ jQuery(document).ready(function() {
         }
     });
 
-    var checkbox = jQuery('#toggleInputs');
-            checkbox.on('change', function() {
-                var specificInputs = jQuery('#specificInputs');
-                if (checkbox.prop('checked')) {
-                    specificInputs.show();
-                } else {
-                    specificInputs.hide();
-                }
-            });
-                
+            var checkbox1 = jQuery('#toggleInputs');
+        checkbox1.on('change', function() {
+            var specificInputs = jQuery('#specificInputs');
+            if (checkbox1.prop('checked')) {
+                specificInputs.show();
+            } else {
+                specificInputs.hide();
+            }
+        });
+
+        var checkbox2 = jQuery('#toggleInputs2');
+        checkbox2.on('change', function() {
+            var specificInputs2 = jQuery('#specificInputs2');
+            if (checkbox2.prop('checked')) {
+                specificInputs2.show();
+            } else {
+                specificInputs2.hide();
+            }
+        });
         $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
         $($.fn.dataTable.tables(true)).DataTable()
             .columns.adjust();
@@ -1006,6 +1015,8 @@ function abrir_modal_ped(){
     $('#aba_ped_ver').hide();
     $('#aba_ped_prod').hide();
     $('#toggleInputs').hide();
+    $('#specificInputs2').hide();
+    $('#specificInputs').hide();
     $('#toggleInputs').prop('checked', false);
     $('#labelToggleInputs').hide();
     
