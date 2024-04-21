@@ -51,7 +51,7 @@ def obr_add(request):
         item.obr_prop = request.POST['obr_prop']
         item.obr_loc = request.POST['obr_loc']
         item.obr_dta_ini = datetime.strptime(request.POST['obr_dta_ini'], '%Y-%m-%d')
-        item.cat_sta = CategoriaStatus.objects.get(cat_sta_id=3)
+        item.cat_sta = CategoriaStatus.objects.get(cat_sta_id=1)
         item.cat_obr = CategoriaObra.objects.get(cat_obr_id=request.POST['cat_obr'])
         item.usu_cad = Pessoa(pes_id = user_session(request))
         item.save()
@@ -72,14 +72,16 @@ def obr_add(request):
 def obr_edt(request):
     try:
         item = Obra.objects.get(pk=request.POST['obr_id'])
-        if request.method=="POST":
-            item.obr_prop=request.POST['obr_prop']
-            item.obr_loc=request.POST['obr_loc']
-            item.cat_sta = CategoriaStatus(cat_sta_id = request.POST['cat_sta'])
-            item.cat_obr = CategoriaObra(cat_obr_id = request.POST['cat_obr'])
-            item.usu_alt = Pessoa(pes_id = user_session(request))
+        if request.method == "POST":
+            item.obr_prop = request.POST['obr_prop']
+            item.obr_loc = request.POST['obr_loc']
+            if 'obr_dta_fin' in request.POST and request.POST['obr_dta_fin']:
+                item.obr_dta_fin = datetime.strptime(request.POST['obr_dta_fin'], '%Y-%m-%d')
+                item.cat_sta = CategoriaStatus.objects.get(cat_sta_id=3)
+            item.cat_obr = CategoriaObra(cat_obr_id=request.POST['cat_obr'])
+            item.usu_alt = Pessoa(pes_id=user_session(request))
             item.save()
-    except(Exception,DatabaseError) as error:
+    except (Exception, DatabaseError) as error:
         print(error)
         return JsonResponse({
             'error': str(error),
@@ -108,6 +110,9 @@ def obr_del(request):
             'item': None,
             'aviso': 'Excluido com sucesso!'
         }, status=200)
+        
+        
+
 
 ##################################################################Pedido ######################################################################################################
 

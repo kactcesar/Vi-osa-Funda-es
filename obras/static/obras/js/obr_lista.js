@@ -978,6 +978,9 @@ function limparCampos() {
         
 function abrir_modal_obr(){
     $('#obr_btn_salvar').val('insert');
+    $('#obr_dta_fin').val('');
+    $('#obr_dta_fin_container').hide();
+    $('#obr_dta_ini').val('');
     $('#obr_prop').val('');
     $('#obr_loc').val(''); 
     $('#cat_obr').val('').trigger('change'); 
@@ -1054,18 +1057,25 @@ function abrir_modal_ped_ver(){
 
 
 
-function obr_add(){
-    var url
-    if($('#obr_btn_salvar').val() == 'update'){
-        url = '/obras/obr_edt/'
-        KTDropzonePedidoArquivo.save(); 
-    }else{
-        url = '/obras/obr_add/'
-        
+function obr_add() {
+    var url;
+    if ($('#obr_btn_salvar').val() == 'update') {
+        url = '/obras/obr_edt/';
+    } else {
+        url = '/obras/obr_add/';
     }
 
-    var frm_obr = new FormData(document.getElementById('frm_obr'));
+    // Obter as datas do formulário
+    var obr_dta_ini = new Date($('#obr_dta_ini').val());
+    var obr_dta_fin = new Date($('#obr_dta_fin').val());
 
+    // Verificar se obr_dta_ini é menor que obr_dta_fin
+    if (obr_dta_ini >= obr_dta_fin) {
+        // Exibir alerta se obr_dta_ini não for menor que obr_dta_fin
+        Swal.fire("Atenção!", "A data de final não deve ser menor que a data inical.", "warning");
+        return; // Parar a execução da função
+    }
+    var frm_obr = new FormData(document.getElementById('frm_obr'));
     $.ajax({
         method: 'POST',
         url: url,
@@ -1080,14 +1090,14 @@ function obr_add(){
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 allowEnterKey: false,
-                didOpen: function() {            
+                didOpen: function() {
                     Swal.showLoading();
                 }
             })
         },
     })
-    .done(function(data,  textStatus, jqXHR){
-        if (jqXHR.status === 200 && jqXHR.readyState === 4){
+    .done(function(data, textStatus, jqXHR) {
+        if (jqXHR.status === 200 && jqXHR.readyState === 4) {
             $('#kt_obr').DataTable().ajax.reload();
             $('#frm_obr_modal').modal('hide');
             Swal.close();
@@ -1100,6 +1110,7 @@ function obr_add(){
     });
 }
 
+
 function obr_edt(obr_id){
     $.getJSON('/obras/obr_atb/',
         {
@@ -1111,12 +1122,14 @@ function obr_edt(obr_id){
         $('#obr_loc').val(item.obr_loc);
         
         $('#obr_dta_ini').val(moment(item.obr_dta_ini).format("YYYY-MM-DD"));
+        $('#obr_dta_fin').val(moment(item.obr_dta_fin).format("YYYY-MM-DD"));
         
         $('#cat_obr').empty();
         var cat_obr = new Option(item.cat_obr_nome,item.cat_obr_id,true,true);
         $('#cat_obr').append(cat_obr).trigger('change');
         
         $('#obr_btn_salvar').val('update');
+        $('#obr_dta_fin_container').show();
         $('#aba2').show();
         $('[href="#kt_tab_pane_1"]').tab('show');
         $('#frm_obr_modal').modal('show');
@@ -1183,6 +1196,7 @@ function ped_add() {
 
     if ($('#ped_btn_salvar').val() == 'update') {
         url = '/obras/ped_edt/';
+
     } else {
         url = '/obras/ped_add/';
     }
