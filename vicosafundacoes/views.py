@@ -44,31 +44,27 @@ def homepage(request):
 
     return render(request, 'vicosafundacoes/base.html')
 
-
+@login_required(login_url="vicosafundacoes:my-login")
 def register(request):
-
     form = CreateUserForm()
-
+    
     if request.method == "POST":
-
         form = CreateUserForm(request.POST)
-
-        if form.is_valid():
         
-            item = Pessoa()
-            item.pes_nome = request.user
-            item.pes_nome_adm = request.user
-            item.pes_adm_id = request.user.id
-            item.save()
-            form.save()
-
+        if form.is_valid():
+            user = form.save()  # Salva o usuário
+            pessoa = Pessoa.objects.create(
+                pes_nome=form.cleaned_data['username'],  # Usuário
+                pes_email=form.cleaned_data['email'],  # E-mail
+                pes_nome_adm=form.cleaned_data['username'],  # Nome de usuário administrador
+                pes_adm_id=user.id  # ID do usuário administrador
+            )
+            pessoa.save()  # Salva os dados da pessoa
+            
             return redirect("vicosafundacoes:my-login")
-
-
-    context = {'registerform':form}
-
+    
+    context = {'registerform': form}
     return render(request, 'vicosafundacoes/register.html', context=context)
-
 
 
 def my_login(request):
